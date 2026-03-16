@@ -101,6 +101,7 @@ app.use((req, res, next) => {
     res.locals.path = req.originalUrl;
     res.locals.title = "IBC Tank Store";
     res.locals.productImages = [];
+    res.locals.searchQuery = '';
     if (req.path.startsWith("/admin")) {
         res.locals.layout = "layouts/admin";
     } else {
