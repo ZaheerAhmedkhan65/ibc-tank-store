@@ -1,118 +1,126 @@
 // middlewares/upload.js
-const cloudinary = require('cloudinary').v2;
-const CloudinaryStorage = require('multer-storage-cloudinary');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-require('dotenv').config();
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
+const AppError = require('../utils/AppError');
 
-// Ensure uploads directory exists in development
-if (process.env.NODE_ENV !== 'production') {
-  const uploadsDir = path.join(__dirname, '../uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-}
+/**
+ * Create a Cloudinary storage instance for a specific folder with transformations
+ * @param {string} subFolder - e.g., 'posts', 'avatars', 'payments'
+ * @param {Object} transformations - Cloudinary transformation options
+ * @returns {CloudinaryStorage}
+ */
+const createCloudinaryStorage = (subFolder, transformations = {}) => {
+  const defaultTransformations = {
+    quality: 'auto',
+    fetch_format: 'auto'
+  };
 
-// Configure Cloudinary for production
-if (process.env.NODE_ENV === 'production') {
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+  const finalTransformations = { ...defaultTransformations, ...transformations };
+
+  // Convert transformations object to array format for Cloudinary
+  const transformationArray = Object.entries(finalTransformations).map(([key, value]) => {
+    if (key === 'crop' && value === 'limit') {
+      return { [key]: value };
+    }
+    return { [key]: value };
   });
-}
 
-let storage;
-
-if (process.env.NODE_ENV === 'production') {
-  // Cloudinary storage for production
-  storage = new CloudinaryStorage({
+  return new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: async (req, file) => {
-      return {
-        folder: 'ibc-tank-store/products',
-        allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-        transformation: [{
-          width: 500,
-          height: 500,
-          crop: 'limit',
-          quality: 'auto',
-          fetch_format: 'auto'
-        }]
-      };
+    params: {
+      folder: `${process.env.APP_NAME || 'app'}/${subFolder}`,
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+      transformation: transformationArray
     }
   });
-} else {
-  // Local file storage for development
-  storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, path.join(__dirname, '../uploads'));
+};
+
+/**
+ * Get transformation settings based on resource type
+ * @param {string} resourceType - 'thumbnail', 'content', 'avatar', 'payment'
+ * @param {Object} customOptions - Custom width/height options
+ * @returns {Object}
+ */
+const getResourceTransformations = (resourceType, customOptions = {}) => {
+  const transformations = {
+    thumbnail: {
+      width: customOptions.width || 800,
+      height: customOptions.height || 600,
+      crop: 'limit',
+      quality: 'auto:good'
     },
-    filename: function (req, file, cb) {
-      // Create unique filename with timestamp
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const ext = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    product: {
+      width: customOptions.width || 500,
+      height: customOptions.height || 500,
+      crop: 'limit',
+      quality: 'auto:good'
+    },
+    avatar: {
+      width: customOptions.width || 300,
+      height: customOptions.height || 300,
+      crop: 'fill',
+      gravity: 'face',
+      radius: 'max',
+      quality: 'auto:best'
+    },
+    payment: {
+      width: customOptions.width || 1500,
+      height: customOptions.height || 1500,
+      crop: 'limit',
+      quality: 'auto:good'
     }
-  });
-}
+  };
 
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    // Allow only image files
-    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+  return transformations[resourceType] || transformations.content;
+};
 
-    if (allowedMimes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Only JPEG, PNG and GIF images are allowed.'), false);
-    }
-  }
-});
-
-// Helper function to get file URL/path based on environment
-const getFileUrl = (file) => {
-  if (process.env.NODE_ENV === 'production') {
-    // For Cloudinary, file.path is the URL
-    return file.path;
+/**
+ * File filter – only images
+ */
+const imageFilter = (req, file, cb) => {
+  const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  if (allowedMimes.includes(file.mimetype)) {
+    cb(null, true);
   } else {
-    // For local development, return relative path
-    return `/uploads/${path.basename(file.path)}`;
+    cb(new AppError('Only image files are allowed (jpeg, jpg, png, gif, webp)', 400), false);
   }
 };
 
-// Helper function to delete file
-const deleteFile = async (filePath) => {
-  try {
-    if (process.env.NODE_ENV === 'production') {
-      // Extract public_id from Cloudinary URL
-      const urlParts = filePath.split('/');
-      const publicIdWithExtension = urlParts.slice(urlParts.indexOf('ibc-tank-store')).join('/');
-      const publicId = publicIdWithExtension.substring(0, publicIdWithExtension.lastIndexOf('.'));
+/**
+ * Create a multer instance configured for a specific resource
+ * @param {string} resource - 'posts', 'avatars', 'payments', etc.
+ * @param {Object} options - { fieldName, maxSize, multiple, width, height, transformationType }
+ * @returns {Object} - multer instance with appropriate .single() or .array() method
+ */
+const uploadForResource = (resource, options = {}) => {
+  console.log(`Configuring upload for resource: ${resource} with options:`, options);
+  const transformationType = options.transformationType ||
+    (resource === 'products' ? 'product' :
+      resource === 'avatars' ? 'avatar' :
+        resource === 'payments' ? 'payment' : 'content');
 
-      await cloudinary.uploader.destroy(publicId);
-    } else {
-      // Delete local file
-      const fullPath = path.join(__dirname, '..', filePath);
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      }
-    }
-  } catch (error) {
-    console.error('Error deleting file:', error);
-    // Don't throw error for file deletion failures
+  const transformations = getResourceTransformations(transformationType, {
+    width: options.width,
+    height: options.height
+  });
+
+  const storage = createCloudinaryStorage(resource, transformations);
+  const maxSize = options.maxSize || 5 * 1024 * 1024; // default 5MB
+
+  const upload = multer({
+    storage: storage,
+    limits: { fileSize: maxSize },
+    fileFilter: imageFilter
+  });
+
+  const fieldName = options.fieldName || 'file';
+  const multiple = options.multiple || false;
+
+  if (multiple) {
+    return upload.array(fieldName, options.maxCount || 10);
   }
+  return upload.single(fieldName);
 };
 
-// Export
-module.exports = {
-  upload,
-  single: (fieldName) => upload.single(fieldName),
-  array: (fieldName, maxCount) => upload.array(fieldName, maxCount),
-  fields: (fields) => upload.fields(fields),
-  getFileUrl,
-  deleteFile
-};
+module.exports = { uploadForResource, getResourceTransformations };
