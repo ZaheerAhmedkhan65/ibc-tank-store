@@ -2,10 +2,50 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Rating = require('../models/Rating');
-const { getFileUrl, deleteFile } = require('../middlewares/upload');
+const { deleteFile } = require('../middlewares/upload');
+
+// ─────────────────────────────────────────────────────────────
+// Helper: parse the imageUrls field sent as JSON from the client
+// Returns an array of URL strings, or throws if none are found.
+// ─────────────────────────────────────────────────────────────
+function parseImageUrls(body) {
+    let urls = [];
+
+    if (body.imageUrls) {
+        try {
+            const parsed = JSON.parse(body.imageUrls);
+            if (Array.isArray(parsed)) urls = parsed.filter(Boolean);
+        } catch {
+            // imageUrls sent as a plain string (single URL)
+            if (typeof body.imageUrls === 'string' && body.imageUrls.trim()) {
+                urls = [body.imageUrls.trim()];
+            }
+        }
+    }
+
+    return urls;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Helper: build a key→value object from parallel arrays
+// Skips pairs where the key is blank.
+// ─────────────────────────────────────────────────────────────
+function buildKVObject(keys, values) {
+    const rawKeys = Array.isArray(keys) ? keys : [keys].filter(Boolean);
+    const rawVals = Array.isArray(values) ? values : [values].filter(Boolean);
+
+    const obj = {};
+    rawKeys.forEach((key, idx) => {
+        if (key && key.trim()) {
+            obj[key.trim()] = rawVals[idx] ?? '';
+        }
+    });
+
+    return Object.keys(obj).length > 0 ? obj : null;
+}
 
 const productController = {
-    // productController.js
+
     async list(req, res) {
         try {
             let products = await Product.getAll();
@@ -14,7 +54,7 @@ const productController = {
             products = products.map(product => ({
                 ...product,
                 rating: parseFloat(product.rating).toFixed(1),
-                price: parseInt(product.price)
+                price: parseInt(product.price),
             }));
 
             const searchQuery = req.query.search || '';
@@ -30,22 +70,22 @@ const productController = {
                     categories,
                     viewPage: 'products',
                     success: req.flash('success'),
-                    error: req.flash('error')
-                });
-            } else {
-                res.render('public/products/index', {
-                    title: 'Products',
-                    products,
-                    categories,
-                    searchQuery,
-                    selectedCategory,
-                    minPrice,
-                    maxPrice,
-                    condition,
-                    success: req.flash('success'),
-                    error: req.flash('error')
+                    error: req.flash('error'),
                 });
             }
+
+            res.render('public/products/index', {
+                title: 'Products',
+                products,
+                categories,
+                searchQuery,
+                selectedCategory,
+                minPrice,
+                maxPrice,
+                condition,
+                success: req.flash('success'),
+                error: req.flash('error'),
+            });
         } catch (error) {
             console.error('Product list error:', error);
             req.flash('error', 'Failed to fetch products');
@@ -58,50 +98,29 @@ const productController = {
         res.render('admin/products/new', {
             title: 'Add New Product',
             viewPage: 'products-new',
-            categories
+            categories,
         });
     },
 
     async create(req, res) {
         try {
             const { name, description, price, category_id, product_condition, stock } = req.body;
-            const { additional_info_key = [], additional_info_value = [], specs_key = [], specs_value = [] } = req.body;
-            
-            const uploaded = (req.files && req.files.length) ? req.files.map(f => getFileUrl(f)) : [];
+            const {
+                additional_info_key = [],
+                additional_info_value = [],
+                specs_key = [],
+                specs_value = [],
+            } = req.body;
 
-            if (!uploaded.length) {
+            // ── Images come from the client as a JSON array of already-uploaded URLs ──
+            const imageUrls = parseImageUrls(req.body);
+            if (!imageUrls.length) {
                 throw new Error('At least one product image is required');
             }
 
-            const imageField = JSON.stringify(uploaded);
-
-            // Build additional_info object from key-value arrays
-            let additionalInfoJson = null;
-            if (Array.isArray(additional_info_key) && additional_info_key.length > 0) {
-                additionalInfoJson = {};
-                const keys = Array.isArray(additional_info_key) ? additional_info_key : [additional_info_key];
-                const values = Array.isArray(additional_info_value) ? additional_info_value : [additional_info_value];
-                keys.forEach((key, idx) => {
-                    if (key && key.trim()) {
-                        additionalInfoJson[key.trim()] = values[idx] || '';
-                    }
-                });
-                if (Object.keys(additionalInfoJson).length === 0) additionalInfoJson = null;
-            }
-
-            // Build specs object from key-value arrays
-            let specsJson = null;
-            if (Array.isArray(specs_key) && specs_key.length > 0) {
-                specsJson = {};
-                const keys = Array.isArray(specs_key) ? specs_key : [specs_key];
-                const values = Array.isArray(specs_value) ? specs_value : [specs_value];
-                keys.forEach((key, idx) => {
-                    if (key && key.trim()) {
-                        specsJson[key.trim()] = values[idx] || '';
-                    }
-                });
-                if (Object.keys(specsJson).length === 0) specsJson = null;
-            }
+            const imageField = JSON.stringify(imageUrls);
+            const additionalInfoJson = buildKVObject(additional_info_key, additional_info_value);
+            const specsJson = buildKVObject(specs_key, specs_value);
 
             const newProduct = await Product.create(
                 name,
@@ -112,7 +131,7 @@ const productController = {
                 product_condition,
                 stock,
                 additionalInfoJson,
-                specsJson
+                specsJson,
             );
 
             req.flash('success', 'Product created successfully');
@@ -120,7 +139,7 @@ const productController = {
         } catch (error) {
             console.error('Create error:', error);
             req.flash('error', error.message || 'Failed to create product');
-            res.redirect('/products/new');
+            res.redirect('/admin/products/new');
         }
     },
 
@@ -131,32 +150,29 @@ const productController = {
                 req.flash('error', 'Product not found');
                 return res.redirect('/products');
             }
+
             const ratings = await Rating.getProductRatings(req.params.id);
             const productImages = product.images || [];
 
             product = {
                 ...product,
                 rating: product.rating ? parseFloat(product.rating).toFixed(1) : 0,
-                price: parseInt(product.price)
+                price: parseInt(product.price),
             };
 
-            if (req.user && req.user.role === 'admin' && req.baseUrl === '/admin') {
-                res.render('admin/products/show', {
-                    title: product.name,
-                    viewPage: 'products-show',
-                    product,
-                    productImages,
-                    ratings
-                });
-            } else {
-                res.render('public/products/show', {
-                    title: product.name,
-                    ratings,
-                    productImages,
-                    product
-                });
-            }
+            const view = (req.user && req.user.role === 'admin' && req.baseUrl === '/admin')
+                ? 'admin/products/show'
+                : 'public/products/show';
+
+            res.render(view, {
+                title: product.name,
+                viewPage: 'products-show',
+                product,
+                productImages,
+                ratings,
+            });
         } catch (error) {
+            console.error('Show error:', error);
             req.flash('error', 'Failed to fetch product details');
             res.redirect('/products');
         }
@@ -166,6 +182,7 @@ const productController = {
         try {
             const product = await Product.getById(req.params.id);
             const categories = await Category.getAll();
+
             if (!product) {
                 req.flash('error', 'Product not found');
                 return res.redirect('/products');
@@ -178,9 +195,10 @@ const productController = {
                 product,
                 productImages,
                 viewPage: 'products-edit',
-                categories
+                categories,
             });
         } catch (error) {
+            console.error('Edit form error:', error);
             req.flash('error', 'Failed to load edit form');
             res.redirect('/products');
         }
@@ -190,82 +208,54 @@ const productController = {
         try {
             const { id } = req.params;
             const { name, description, price, category_id, product_condition, stock } = req.body;
-            const { additional_info_key = [], additional_info_value = [], specs_key = [], specs_value = [] } = req.body;
-            // existingImages can be a single value or an array
-            let { existingImages } = req.body;
+            const {
+                additional_info_key = [],
+                additional_info_value = [],
+                specs_key = [],
+                specs_value = [],
+            } = req.body;
 
             const product = await Product.getById(id);
-
             if (!product) {
                 req.flash('error', 'Product not found');
                 return res.redirect('/products');
             }
-            // Normalize existingImages to array
-            if (!existingImages) existingImages = [];
-            else if (typeof existingImages === 'string') existingImages = [existingImages];
 
-            // Parse original product images
+            // ── Images: client sends all final URLs (existing + newly uploaded) ──
+            const imageUrls = parseImageUrls(req.body);
+            if (!imageUrls.length) {
+                throw new Error('At least one product image is required');
+            }
+
+            // Parse what was stored originally so we can delete removed images
             let originalImages = [];
             if (product.image) {
                 try {
                     const parsed = JSON.parse(product.image);
                     if (Array.isArray(parsed)) originalImages = parsed;
                     else if (typeof parsed === 'string') originalImages = [parsed];
-                } catch (err) {
+                } catch {
                     originalImages = [product.image];
                 }
             }
 
-            // Determine removed images (present originally but not kept)
-            const removed = originalImages.filter(img => !existingImages.includes(img));
-            for (const rem of removed) {
-                try {
-                    await deleteFile(rem);
-                } catch (err) {
-                    console.error('Error deleting removed image:', err);
-                }
+            // Delete images that were present before but are now removed
+            const removed = originalImages.filter(img => !imageUrls.includes(img));
+            for (const url of removed) {
+                try { await deleteFile(url); }
+                catch (err) { console.error('Error deleting removed image:', err); }
             }
 
-            // New uploaded files
-            const newUploaded = (req.files && req.files.length) ? req.files.map(f => getFileUrl(f)) : [];
+            const imageField = JSON.stringify(imageUrls);
+            const additionalInfoJson = buildKVObject(additional_info_key, additional_info_value);
+            const specsJson = buildKVObject(specs_key, specs_value);
 
-            // Final images to save
-            const imagesToSave = [...existingImages, ...newUploaded];
-            if (!imagesToSave.length) {
-                throw new Error('At least one product image is required');
-            }
+            await Product.updateProduct(
+                id, name, description, price, imageField,
+                category_id, product_condition, stock,
+                additionalInfoJson, specsJson,
+            );
 
-            const imageField = JSON.stringify(imagesToSave);
-
-            // Build additional_info object from key-value arrays
-            let additionalInfoJson = null;
-            if (Array.isArray(additional_info_key) && additional_info_key.length > 0) {
-                additionalInfoJson = {};
-                const keys = Array.isArray(additional_info_key) ? additional_info_key : [additional_info_key];
-                const values = Array.isArray(additional_info_value) ? additional_info_value : [additional_info_value];
-                keys.forEach((key, idx) => {
-                    if (key && key.trim()) {
-                        additionalInfoJson[key.trim()] = values[idx] || '';
-                    }
-                });
-                if (Object.keys(additionalInfoJson).length === 0) additionalInfoJson = null;
-            }
-
-            // Build specs object from key-value arrays
-            let specsJson = null;
-            if (Array.isArray(specs_key) && specs_key.length > 0) {
-                specsJson = {};
-                const keys = Array.isArray(specs_key) ? specs_key : [specs_key];
-                const values = Array.isArray(specs_value) ? specs_value : [specs_value];
-                keys.forEach((key, idx) => {
-                    if (key && key.trim()) {
-                        specsJson[key.trim()] = values[idx] || '';
-                    }
-                });
-                if (Object.keys(specsJson).length === 0) specsJson = null;
-            }
-
-            await Product.updateProduct(id, name, description, price, imageField, category_id, product_condition, stock, additionalInfoJson, specsJson);
             req.flash('success', 'Product updated successfully');
             res.redirect(`/admin/products/${id}`);
         } catch (error) {
@@ -278,37 +268,30 @@ const productController = {
     async delete(req, res) {
         try {
             const { id } = req.params;
-
-            // Delete the product image if it exists and is from Cloudinary
             const product = await Product.getById(id);
+
             if (product && product.image) {
                 let imgs = [];
                 try {
                     const parsed = JSON.parse(product.image);
                     if (Array.isArray(parsed)) imgs = parsed;
                     else if (typeof parsed === 'string') imgs = [parsed];
-                } catch (err) {
+                } catch {
                     imgs = [product.image];
                 }
 
                 for (const img of imgs) {
-                    try {
-                        await deleteFile(img);
-                    } catch (err) {
-                        console.error('Error deleting product image:', err);
-                    }
+                    try { await deleteFile(img); }
+                    catch (err) { console.error('Error deleting product image:', err); }
                 }
             }
 
             const deleted = await Product.delete(id);
-
-            if (deleted) {
-                req.flash('success', 'Product deleted successfully');
-            } else {
-                req.flash('error', 'Product not found');
-            }
+            req.flash(deleted ? 'success' : 'error',
+                deleted ? 'Product deleted successfully' : 'Product not found');
             res.redirect('/admin/products');
         } catch (error) {
+            console.error('Delete error:', error);
             req.flash('error', 'Failed to delete product');
             res.redirect('/products');
         }
@@ -323,13 +306,14 @@ const productController = {
             res.render('public/products/list', {
                 title: `Products in ${category.name}`,
                 products,
-                currentCategory: categoryId
+                currentCategory: categoryId,
             });
         } catch (error) {
+            console.error('List by category error:', error);
             req.flash('error', 'Failed to fetch products by category');
             res.redirect('/products');
         }
-    }
+    },
 };
 
 module.exports = productController;

@@ -8,7 +8,6 @@ const contactController = require('../controllers/contactController');
 const categoryController = require('../controllers/categoryController');
 const settingsController = require('../controllers/settingsController');
 const analyticsController = require('../controllers/analyticsController');
-const { single, array } = require("../middlewares/upload");
 const router = express.Router();
 router.use(isAuthenticated);
 router.use(isAdmin);
@@ -27,12 +26,11 @@ router.get("/dashboard", async (req, res) => {
 // Products
 router.get("/products", productController.list);
 router.get("/products/new", productController.createForm);
-router.post("/products/create", array('image', 4), productController.create);
+router.post("/products/create", productController.create);
 router.get("/products/:id", productController.show);
 router.get("/products/:id/edit", productController.editForm);
-router.post("/products/:id/update", array('image', 4), productController.update);
+router.post("/products/:id/update", productController.update);
 router.post("/products/:id/delete", productController.delete);
-
 
 // Contacts
 router.get('/contacts', contactController.list);

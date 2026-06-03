@@ -1,200 +1,202 @@
 <!-- views/admin/products/edit.ejs -->
-<section class="mt-5">
-    <form action="/admin/products/<%= product.id %>/update" method="POST" enctype="multipart/form-data" class="row g-3">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-md-4 mb-2">
-                        <label for="name" class="form-label fw-semibold">Product Name</label>
-                        <input type="text" name="name" class="form-control" value="<%= product.name %>" required>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <label for="price" class="form-label fw-semibold">Price</label>
-                        <input type="number" name="price" class="form-control" value="<%= product.price %>" required>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <label for="stock" class="form-label fw-semibold">Stock</label>
-                        <input type="number" name="stock" class="form-control" value="<%= product.stock %>" required>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <label for="product_condition" class="form-label fw-semibold">Select product condition</label>
-                        <select name="product_condition" id="product_condition" class="form-select" required>
-                            <option value=""></option>
-                            <option value="New" <%=product.product_condition==='New' ? 'selected' : '' %>>New</option>
-                            <option value="Used" <%=product.product_condition==='Used' ? 'selected' : '' %>>Used
-                            </option>
-                            <option value="Refurbished" <%=product.product_condition==='Refurbished' ? 'selected' : ''
-                                %>>Refurbished</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 mb-2">
-                        <label for="category_id" class="form-label fw-semibold">Select Category</label>
-                        <select name="category_id" id="category_id" class="form-select" required>
-                            <option value=""></option>
-                            <% categories.forEach(category=> { %>
-                                <option value="<%= category.id %>" <%=product.category_id===category.id ? 'selected'
-                                    : '' %>>
-                                    <%= category.name %>
-                                </option>
-                                <% }) %>
-                        </select>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label for="description" class="form-label fw-semibold">Description</label>
-                        <textarea class="form-control tinymce-editor" id="description" name="description" rows="10">
-                        <%= product && product.description ? product.description : '' %>
-                        </textarea>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label class="form-label fw-semibold">Additional Information</label>
-                        <div id="additional_info_container" class="mb-2">
-                            <% if (product && product.additional_info && Object.keys(product.additional_info).length> 0)
-                                { %>
-                                <% Object.entries(product.additional_info).forEach(([key, value])=> { %>
-                                    <div class="row additional-info-row mb-2">
-                                        <div class="col-md-5">
-                                            <input type="text" class="form-control" placeholder="Key"
-                                                name="additional_info_key[]" value="<%= key %>">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <input type="text" class="form-control" placeholder="Value"
-                                                name="additional_info_value[]" value="<%= value %>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="button"
-                                                class="btn btn-outline-danger btn-sm w-100 delete-row">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <% }) %>
-                                        <% } else { %>
-                                            <div class="row additional-info-row mb-2">
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" placeholder="Key"
-                                                        name="additional_info_key[]">
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" placeholder="Value"
-                                                        name="additional_info_value[]">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button type="button"
-                                                        class="btn btn-outline-danger btn-sm w-100 delete-row"
-                                                        style="display: none;">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <% } %>
-                        </div>
-                        <button type="button" class="btn btn-outline-success btn-sm" id="add_additional_info_row">
-                            <i class="bi bi-plus"></i> Add Row
-                        </button>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <label class="form-label fw-semibold">Product Specifications</label>
-                        <div id="specs_container" class="mb-2">
-                            <% if (product && product.specs && Object.keys(product.specs).length> 0) { %>
-                                <% Object.entries(product.specs).forEach(([key, value])=> { %>
-                                    <div class="row specs-row mb-2">
-                                        <div class="col-md-5">
-                                            <input type="text" class="form-control" placeholder="Key" name="specs_key[]"
-                                                value="<%= key %>">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <input type="text" class="form-control" placeholder="Value"
-                                                name="specs_value[]" value="<%= value %>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="button"
-                                                class="btn btn-outline-danger btn-sm w-100 delete-row">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <% }) %>
-                                        <% } else { %>
-                                            <div class="row specs-row mb-2">
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" placeholder="Key"
-                                                        name="specs_key[]">
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" placeholder="Value"
-                                                        name="specs_value[]">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button type="button"
-                                                        class="btn btn-outline-danger btn-sm w-100 delete-row"
-                                                        style="display: none;">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <% } %>
-                        </div>
-                        <button type="button" class="btn btn-outline-success btn-sm" id="add_specs_row">
-                            <i class="bi bi-plus"></i> Add Row
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Enhanced Image Upload Section -->
-            <div class="col-lg-4">
-                <label class="form-label fw-semibold">Product Image</label>
-                <!-- Hidden container for existingImages inputs (inside form) -->
-                <div id="existingImagesInputs" style="display: none;"></div>
-                <div class="image-upload-container border rounded py-4 px-3 text-center">
-                    <!-- Existing and new images preview -->
-                    <div id="imagePreviewContainer" class="mb-3">
-                        <div id="thumbnails" class="d-flex gap-2 flex-wrap justify-content-center"></div>
-                    </div>
-                    <!-- Upload Area -->
-                    <div id="uploadArea" class="p-4 border-dashed rounded">
-                        <input type="file" name="image" id="imageInput" class="d-none" accept="image/*" multiple>
-                        <div class="upload-placeholder" onclick="document.getElementById('imageInput').click();">
-                            <i class="bi bi-cloud-upload display-4 text-muted"></i>
-                            <p class="mt-2 text-muted">Click to upload or drag and drop</p>
-                            <small class="text-muted">SVG, PNG, JPG or GIF (max. 5MB)</small>
-                        </div>
-                    </div>
-
-                    <!-- Loading Indicator -->
-                    <div id="uploadLoading" class="mt-3 d-none">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2 text-muted">Processing image...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <button type="submit" class="btn btn-success">Update Product</button>
-            <a href="/admin/products" class="btn btn-outline-secondary mx-2">Cancel</a>
-        </div>
-    </form>
-</section>
-
-<script>
-    // After the main script loads, add hidden inputs for existing images that aren't removed
-    window.addEventListener('load', function () {
-        const existingImagesData = document.getElementById('product-images-data');
-        const productImages = existingImagesData ? JSON.parse(existingImagesData.textContent) : [];
-        const existingImagesInputs = document.getElementById('existingImagesInputs');
-
-        if (existingImagesInputs && productImages.length > 0) {
-            productImages.forEach(src => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'existingImages';
-                input.value = src;
-                existingImagesInputs.appendChild(input);
-            });
-        }
-    });
+<%# Server injects existing image URLs; controller reads this on connect() %>
+    <script id="product-images-data" type="application/json">
+    <%- JSON.stringify(productImages || []) %>
 </script>
-<script src="/admin/assets/js/upload.js"></script>
+
+    <section class="mt-5" data-controller="product">
+        <form action="/admin/products/<%= product.id %>/update" method="POST" class="row g-3" data-target="product.form"
+            data-action="submit->product#onSubmit">
+            <div class="row">
+                <!-- ─── Left column: text fields ─────────────────────── -->
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label for="name" class="form-label fw-semibold">Product Name</label>
+                            <input type="text" name="name" class="form-control" value="<%= product.name %>" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="price" class="form-label fw-semibold">Price</label>
+                            <input type="number" name="price" class="form-control" value="<%= product.price %>"
+                                required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="stock" class="form-label fw-semibold">Stock</label>
+                            <input type="number" name="stock" class="form-control" value="<%= product.stock %>"
+                                required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="product_condition" class="form-label fw-semibold">Select product
+                                condition</label>
+                            <select name="product_condition" id="product_condition" class="form-select" required>
+                                <option value=""></option>
+                                <option value="New" <%=product.product_condition==='New' ? 'selected' : '' %>>New
+                                </option>
+                                <option value="Used" <%=product.product_condition==='Used' ? 'selected' : '' %>>Used
+                                </option>
+                                <option value="Refurbished" <%=product.product_condition==='Refurbished' ? 'selected'
+                                    : '' %>>Refurbished</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label for="category_id" class="form-label fw-semibold">Select Category</label>
+                            <select name="category_id" id="category_id" class="form-select" required>
+                                <option value=""></option>
+                                <% categories.forEach(category=> { %>
+                                    <option value="<%= category.id %>" <%=product.category_id===category.id ? 'selected'
+                                        : '' %>>
+                                        <%= category.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="description" class="form-label fw-semibold">Description</label>
+                            <textarea class="form-control tinymce-editor" id="description" name="description"
+                                rows="10"><%= product && product.description ? product.description : '' %></textarea>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Additional Information</label>
+                            <div id="additional_info_container" class="mb-2">
+                                <% if (product && product.additional_info &&
+                                    Object.keys(product.additional_info).length> 0) { %>
+                                    <% Object.entries(product.additional_info).forEach(([key, value])=> { %>
+                                        <div class="row additional-info-row mb-2">
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" placeholder="Key"
+                                                    name="additional_info_key[]" value="<%= key %>">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" placeholder="Value"
+                                                    name="additional_info_value[]" value="<%= value %>">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button"
+                                                    class="btn btn-outline-danger btn-sm w-100 delete-row">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <div class="row additional-info-row mb-2">
+                                                    <div class="col-md-5">
+                                                        <input type="text" class="form-control" placeholder="Key"
+                                                            name="additional_info_key[]">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <input type="text" class="form-control" placeholder="Value"
+                                                            name="additional_info_value[]">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="button"
+                                                            class="btn btn-outline-danger btn-sm w-100 delete-row"
+                                                            style="display:none;">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                            </div>
+                            <button type="button" class="btn btn-outline-success btn-sm"
+                                data-action="click->product#addInfoRow">
+                                <i class="bi bi-plus"></i> Add Row
+                            </button>
+                        </div>
+
+                        <!-- Product Specifications -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-semibold">Product Specifications</label>
+                            <div id="specs_container" class="mb-2">
+                                <% if (product && product.specs && Object.keys(product.specs).length> 0) { %>
+                                    <% Object.entries(product.specs).forEach(([key, value])=> { %>
+                                        <div class="row specs-row mb-2">
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" placeholder="Key"
+                                                    name="specs_key[]" value="<%= key %>">
+                                            </div>
+                                            <div class="col-md-5">
+                                                <input type="text" class="form-control" placeholder="Value"
+                                                    name="specs_value[]" value="<%= value %>">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button"
+                                                    class="btn btn-outline-danger btn-sm w-100 delete-row">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <div class="row specs-row mb-2">
+                                                    <div class="col-md-5">
+                                                        <input type="text" class="form-control" placeholder="Key"
+                                                            name="specs_key[]">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <input type="text" class="form-control" placeholder="Value"
+                                                            name="specs_value[]">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="button"
+                                                            class="btn btn-outline-danger btn-sm w-100 delete-row"
+                                                            style="display:none;">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                            </div>
+                            <button type="button" class="btn btn-outline-success btn-sm"
+                                data-action="click->product#addSpecsRow">
+                                <i class="bi bi-plus"></i> Add Row
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Right column: image upload ───────────────────── -->
+                <div class="col-lg-4">
+                    <label class="form-label fw-semibold">Product Image</label>
+                    <div class="image-upload-container border rounded py-4 px-3 text-center">
+
+                        <%# Preview container starts visible on edit (existing images will be populated by controller)
+                            %>
+                            <div class="mb-3" data-target="product.imagePreviewContainer">
+                                <div class="d-flex gap-2 flex-wrap justify-content-center"
+                                    data-target="product.thumbnails"></div>
+                            </div>
+
+                            <div class="p-4 border-dashed rounded" data-target="product.uploadArea">
+                                <input type="file" name="image" class="d-none" accept="image/*" multiple
+                                    data-target="product.imageInput" data-action="change->product#onFileChange"
+                                    id="imageInput">
+                                <div class="upload-placeholder"
+                                    onclick="document.getElementById('imageInput').click();">
+                                    <i class="bi bi-cloud-upload display-4 text-muted"></i>
+                                    <p class="mt-2 text-muted">Click to upload or drag and drop</p>
+                                    <small class="text-muted">SVG, PNG, JPG or GIF (max. 5MB)</small>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 d-none" data-target="product.uploadLoading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading…</span>
+                                </div>
+                                <p class="mt-2 text-muted">Processing image…</p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-success" data-target="product.submitBtn">
+                    Update Product
+                </button>
+                <a href="/admin/products" class="btn btn-outline-secondary mx-2">Cancel</a>
+            </div>
+        </form>
+    </section>

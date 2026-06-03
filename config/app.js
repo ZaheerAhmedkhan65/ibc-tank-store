@@ -23,6 +23,7 @@ const productRoutes = require('../routes/productRoutes');
 const categoryRoutes = require('../routes/categoryRoutes');
 const contactRoutes = require('../routes/contactRoutes');
 const pageRoutes = require('../routes/pageRoutes');
+const uploadRoutes = require('../routes/upload.route');
 const authRoutes = require("../routes/authRoutes");
 const adminRoutes = require("../routes/adminRoutes");
 const ratingRoutes = require("../routes/ratingsRoutes");
@@ -101,6 +102,11 @@ app.use((req, res, next) => {
     res.locals.path = req.originalUrl;
     res.locals.title = "IBC Tank Store";
     res.locals.productImages = [];
+    res.locals.featuredProducts = [];
+    res.locals.minPrice = 0;
+    res.locals.maxPrice = 0;
+    res.locals.condition = '';
+    res.locals.latestProducts = '';
     res.locals.searchQuery = '';
     if (req.path.startsWith("/admin")) {
         res.locals.layout = "layouts/admin";
@@ -215,6 +221,7 @@ app.use('/categories', categoryRoutes);
 app.use('/contact', contactRoutes);
 app.use("/auth", authRoutes);
 app.use("/ratings", ratingRoutes);
+app.use("/uploads", uploadRoutes);
 app.use("/admin", adminRoutes);
 app.use("/api/ai", aiRoutes);
 

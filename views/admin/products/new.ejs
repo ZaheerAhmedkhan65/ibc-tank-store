@@ -1,7 +1,9 @@
 <!-- views/admin/products/new.ejs -->
-<section class="mt-5">
-    <form action="/admin/products/create" method="POST" enctype="multipart/form-data" class="row g-3">
+<section class="mt-5" data-controller="product">
+    <form action="/admin/products/create" method="POST" class="row g-3" data-target="product.form"
+        data-action="submit->product#onSubmit">
         <div class="row">
+            <!-- ─── Left column: text fields ─────────────────────── -->
             <div class="col-lg-8">
                 <div class="row">
                     <div class="col-md-4 mb-2">
@@ -38,9 +40,11 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <label for="description" class="form-label fw-semibold">Description</label>
-                        <textarea class="form-control tinymce-editor" id="description" name="description" rows="10">
-                    </textarea>
+                        <textarea class="form-control tinymce-editor" id="description" name="description"
+                            rows="10"></textarea>
                     </div>
+
+                    <!-- Additional Information -->
                     <div class="col-md-12 mb-3">
                         <label class="form-label fw-semibold">Additional Information</label>
                         <div id="additional_info_container" class="mb-2">
@@ -55,16 +59,19 @@
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-outline-danger btn-sm w-100 delete-row"
-                                        style="display: none;">
+                                        style="display:none;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-outline-success btn-sm" id="add_additional_info_row">
+                        <button type="button" class="btn btn-outline-success btn-sm"
+                            data-action="click->product#addInfoRow">
                             <i class="bi bi-plus"></i> Add Row
                         </button>
                     </div>
+
+                    <!-- Product Specifications -->
                     <div class="col-md-12 mb-3">
                         <label class="form-label fw-semibold">Product Specifications</label>
                         <div id="specs_container" class="mb-2">
@@ -77,50 +84,55 @@
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-outline-danger btn-sm w-100 delete-row"
-                                        style="display: none;">
+                                        style="display:none;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-outline-success btn-sm" id="add_specs_row">
+                        <button type="button" class="btn btn-outline-success btn-sm"
+                            data-action="click->product#addSpecsRow">
                             <i class="bi bi-plus"></i> Add Row
                         </button>
                     </div>
                 </div>
             </div>
-            <!-- Enhanced Image Upload Section -->
+
+            <!-- ─── Right column: image upload ───────────────────── -->
             <div class="col-lg-4">
                 <label class="form-label fw-semibold">Product Image</label>
                 <div class="image-upload-container border rounded py-4 px-3 text-center">
-                    <!-- Image Preview (multiple thumbnails) -->
-                    <div id="imagePreviewContainer" class="mb-3 d-none">
-                        <div id="thumbnails" class="d-flex gap-2 flex-wrap justify-content-center"></div>
+
+                    <div class="mb-3 d-none" data-target="product.imagePreviewContainer">
+                        <div class="d-flex gap-2 flex-wrap justify-content-center" data-target="product.thumbnails">
+                        </div>
                     </div>
-                    <!-- Upload Area -->
-                    <div id="uploadArea" class="p-4 border-dashed rounded">
-                        <input type="file" name="image" id="imageInput" class="d-none" accept="image/*" multiple>
+
+                    <div class="p-4 border-dashed rounded" data-target="product.uploadArea">
+                        <input type="file" name="image" class="d-none" accept="image/*" multiple
+                            data-target="product.imageInput" data-action="change->product#onFileChange" id="imageInput">
                         <div class="upload-placeholder" onclick="document.getElementById('imageInput').click();">
                             <i class="bi bi-cloud-upload display-4 text-muted"></i>
                             <p class="mt-2 text-muted">Click to upload or drag and drop</p>
                             <small class="text-muted">SVG, PNG, JPG or GIF (max. 5MB)</small>
                         </div>
                     </div>
-                    <!-- Loading Indicator -->
-                    <div id="uploadLoading" class="mt-3 d-none">
+
+                    <div class="mt-3 d-none" data-target="product.uploadLoading">
                         <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden">Loading…</span>
                         </div>
-                        <p class="mt-2 text-muted">Processing image...</p>
+                        <p class="mt-2 text-muted">Processing image…</p>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="col-12">
-            <button type="submit" class="btn btn-success">Add Product</button>
+            <button type="submit" class="btn btn-success" data-target="product.submitBtn">
+                Add Product
+            </button>
             <a href="/admin/products" class="btn btn-outline-secondary mx-2">Cancel</a>
         </div>
     </form>
 </section>
-<script src="/admin/assets/js/upload.js"></script>
-<!-- <script src="/admin/assets/js/dynamic-rows.js"></script> -->
