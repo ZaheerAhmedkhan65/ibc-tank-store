@@ -1,337 +1,253 @@
-<!-- views/public/products/show.ejs -->
-<div class="row mb-3">
-    <div class="col-12">
-        <h1 class="fw-bold text-center py-3 border-bottom">
-            <%= product.name %>
-        </h1>
+<!-- Product Show Page -->
+<section class="ibc-page-hero">
+  <div class="ibc-container">
+    <div class="ibc-breadcrumb">
+      <a href="/">Home</a> <i class="bi bi-chevron-right" style="font-size:10px"></i>
+      <a href="/products">Products</a> <i class="bi bi-chevron-right" style="font-size:10px"></i>
+      <span><%= product.name %></span>
     </div>
-</div>
+    <h1><%= product.name %></h1>
+  </div>
+</section>
 
-<div class="row mb-4">
-    <!-- Product Image -->
-    <div class="col-lg-5">
-        <% if (productImages && productImages.length> 0) { %>
-            <div class="position-relative text-center">
-                <button class="gallery-nav prev" type="button">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-                <!-- MAIN IMAGE (NOT an anchor) -->
-                <img id="mainProductImage" src="<%= productImages[0] %>" class="img-fluid product-main-img"
-                    data-index="0" alt="<%= product.name %>" />
-
-                <button class="gallery-nav next" type="button">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-
+<div class="ibc-section" style="background:var(--ibc-white)">
+  <div class="ibc-container">
+    <div style="display:grid;grid-template-columns:1fr;gap:40px;align-items:start" class="ibc-animate">
+      <!-- Product Images -->
+      <div>
+        <% if (productImages && productImages.length > 0) { %>
+          <div class="ibc-product-gallery">
+            <div class="ibc-product-gallery-main">
+              <img id="mainProductImage" src="<%= productImages[0] %>" alt="<%= product.name %>" 
+                   class="ibc-product-gallery-img" data-index="0" />
+              <button class="ibc-gallery-nav ibc-gallery-prev" type="button"><i class="bi bi-chevron-left"></i></button>
+              <button class="ibc-gallery-nav ibc-gallery-next" type="button"><i class="bi bi-chevron-right"></i></button>
+              <% if (productImages.length > 1) { %>
+                <div class="ibc-badge-count"><%= productImages.length %> Photos</div>
+              <% } %>
             </div>
-
-            <!-- THUMBNAILS -->
-            <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
-                <% productImages.forEach((image, index)=> { %>
-                    <img src="<%= image %>" class="product-thumb <%= index === 0 ? 'active' : '' %>"
-                        data-index="<%= index %>" alt="Thumbnail" />
-                <% }) %>
+            <!-- Thumbnails -->
+            <div class="ibc-product-thumbnails">
+              <% productImages.forEach((image, index) => { %>
+                <div class="ibc-thumb-item <%= index === 0 ? 'active' : '' %>" data-index="<%= index %>">
+                  <img src="<%= image %>" alt="Thumbnail <%= index + 1 %>" />
+                </div>
+              <% }) %>
             </div>
+          </div>
         <% } else { %>
-            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                <span class="text-muted">No image</span>
+          <div class="ibc-product-gallery-main" style="display:flex;align-items:center;justify-content:center;background:var(--ibc-gray-100);min-height:300px;">
+            <div style="text-align:center;color:var(--ibc-gray-500);">
+              <i class="bi bi-image" style="font-size:48px;margin-bottom:12px;display:block"></i>
+              <p>No image available</p>
             </div>
+          </div>
         <% } %>
+      </div>
+
+      <!-- Product Info -->
+      <div>
+        <!-- Name (visible on desktop) -->
+        <h1 style="font-size:28px;font-weight:800;color:var(--ibc-dark);margin-bottom:12px;display:none"><%= product.name %></h1>
+
+        <!-- Price -->
+        <div class="ibc-product-show-price">
+          <span class="ibc-price-label">Price</span>
+          <span class="ibc-price-value"><%= settings.price_currency %><%= product.price %></span>
+        </div>
+
+        <!-- Stock Status -->
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin:16px 0">
+          <div class="ibc-info-badge">
+            <i class="bi bi-box-seam"></i>
+            <span><%= product.stock > 0 ? 'Stock Available' : 'Out of Stock' %></span>
+          </div>
+          <div class="ibc-info-badge">
+            <i class="bi bi-shield-check"></i>
+            <span><%= product.product_condition || 'New' %></span>
+          </div>
+          <div class="ibc-info-badge">
+            <i class="bi bi-star-fill" style="color:var(--ibc-accent)"></i>
+            <span><%= product.rating %> / 5</span>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="ibc-product-cta-buttons">
+          <a href="https://wa.me/<%= settings.contact_number %>?text=<%= encodeURIComponent('Hello, I am interested in your IBC tanks. Please share pricing and availability for: ' + product.name) %>"
+             class="ibc-btn ibc-btn-whatsapp ibc-btn-lg" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-whatsapp"></i> WhatsApp Now
+          </a>
+          <a href="#quote-form-anchor" class="ibc-btn ibc-btn-primary ibc-btn-lg">
+            <i class="bi bi-chat-quote"></i> Get Free Quote
+          </a>
+        </div>
+
+        <!-- Specifications -->
+        <% if (product.specs && Object.keys(product.specs).length > 0) { %>
+          <div class="ibc-specs-section">
+            <h3><i class="bi bi-list-check"></i> Specifications</h3>
+            <table class="ibc-spec-table">
+              <% Object.entries(product.specs).forEach(([key, value]) => { %>
+                <tr>
+                  <td><%= key %></td>
+                  <td><%= value %></td>
+                </tr>
+              <% }) %>
+            </table>
+          </div>
+        <% } %>
+
+        <!-- Rating Display -->
+        <div class="ibc-rating-display">
+          <div class="ibc-rating-stars">
+            <% for(let i = 1; i <= 5; i++) { %>
+              <% if(i <= Math.floor(product.rating)) { %>
+                <i class="bi bi-star-fill"></i>
+              <% } else if(i === Math.ceil(product.rating) && product.rating % 1 > 0) { %>
+                <i class="bi bi-star-half"></i>
+              <% } else { %>
+                <i class="bi bi-star"></i>
+              <% } %>
+            <% } %>
+          </div>
+          <span><%= product.rating %> / 5 · <%= product.rating_count %> <%= product.rating_count > 1 ? 'Ratings' : 'Rating' %></span>
+        </div>
+
+        <!-- Trust Signals -->
+        <div class="ibc-trust-signals">
+          <div class="ibc-trust-signal">
+            <i class="bi bi-truck"></i>
+            <span>Nationwide Delivery</span>
+          </div>
+          <div class="ibc-trust-signal">
+            <i class="bi bi-box-seam"></i>
+            <span>Bulk Orders Available</span>
+          </div>
+          <div class="ibc-trust-signal">
+            <i class="bi bi-lightning-charge"></i>
+            <span>Fast Response</span>
+          </div>
+          <div class="ibc-trust-signal">
+            <i class="bi bi-shield-check"></i>
+            <span>Quality Guaranteed</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Product Info -->
-    <div class="col-lg-7">
-        <div class="card bg-transparent border-0">
-            <div class="card-body">
-                <!-- Price -->
-                <p class="mb-2 text-primary fw-semibold fs-4">
-                    <%= settings.price_currency %><%= product.price %>
-                </p>
+    <!-- Tabs -->
+    <div class="ibc-product-tabs" style="margin-top:40px">
+      <div class="ibc-tab-nav">
+        <button class="ibc-tab-btn active" data-tab="description"><i class="bi bi-file-text"></i> Description</button>
+        <button class="ibc-tab-btn" data-tab="additional-info"><i class="bi bi-info-circle"></i> Additional Info</button>
+        <button class="ibc-tab-btn" data-tab="reviews"><i class="bi bi-chat-dots"></i> Reviews</button>
+      </div>
 
-                <!-- Stock -->
-                <p class="mb-2">
-                    <strong class="me-2">Stock : </strong>
-                    <span>
-                        <%= product.stock> 0 ? 'Stock Available' : 'Out of Stock' %>
-                    </span>
-                </p>
+      <div class="ibc-tab-content" id="description" style="display:block">
+        <div class="ibc-tab-panel">
+          <h3>Description</h3>
+          <%- product.description || '<p style="color:var(--ibc-gray-500)">No description available.</p>' %>
+        </div>
+      </div>
 
-                <p class="mb-2">
-                    <strong class="me-2">Condition : </strong>
-                    <%= product.product_condition %>
-                </p>
+      <div class="ibc-tab-content" id="additional-info" style="display:none">
+        <div class="ibc-tab-panel">
+          <h3>Additional Information</h3>
+          <% if (product.additional_info && Object.keys(product.additional_info).length > 0) { %>
+            <table class="ibc-spec-table">
+              <% Object.entries(product.additional_info).forEach(([key, value]) => { %>
+                <tr>
+                  <td><%= key %></td>
+                  <td><%= value %></td>
+                </tr>
+              <% }) %>
+            </table>
+          <% } else { %>
+            <p style="color:var(--ibc-gray-500)">No additional information available.</p>
+          <% } %>
+        </div>
+      </div>
 
-                <a href="https://wa.me/<%= settings.contact_number %>?text=<%= encodeURIComponent('Hi, I am interested in this product: ' + product.name) %>"
-                    class="btn btn-sm btn-primary rounded-0 text-decoration-none fw-semibold my-3" target="_blank" rel="noopener noreferrer">
-                    <i class="bi bi-whatsapp me-1"></i> Contact
-                </a>
-
-                <% if (product.specs && Object.keys(product.specs).length> 0) { %>
-                    <h5 class="fw-semibold mb-3">
-                        Specifications
-                    </h5>
-                    <div class="col-lg-6 col-md-8">
-                    <% Object.entries(product.specs).forEach(([key, value])=> { %>
-                        <div class="d-flex justify-content-between mb-2">
-                            <strong class="fw-semibold">
-                                <%= key %> 
-                            </strong>
-                            <span>
-                                <%= value %>
-                            </span>
-                        </div>
-                    <% }) %>
+      <div class="ibc-tab-content" id="reviews" style="display:none">
+        <div class="ibc-tab-panel">
+          <h3>Customer Reviews</h3>
+          <% if (ratings.length === 0) { %>
+            <p style="color:var(--ibc-gray-500);text-align:center;padding:32px 0">No reviews yet. Be the first to review this product!</p>
+          <% } else { %>
+            <div class="ibc-reviews-list">
+              <% for (let rating of ratings) { %>
+                <div class="ibc-review-card">
+                  <div class="ibc-review-header">
+                    <div class="ibc-testimonial-avatar" style="width:36px;height:36px;font-size:13px">
+                      <%= rating.user_name ? rating.user_name.charAt(0).toUpperCase() : 'U' %>
                     </div>
-                <% } %>
-                <!-- Rating Display -->
-                <div class="d-flex align-items-center mb-3">
-                    <div class="me-2">
-                        <% for(let i=1; i<=5; i++) { %>
-                            <% if(i <=Math.floor(product.rating)) { %>
-                                <i class="bi bi-star-fill text-warning"></i>
-                            <% } else if(i===Math.ceil(product.rating) && product.rating % 1> 0) { %>
-                                <i class="bi bi-star-half text-warning"></i>
-                            <% } else { %>
-                                <i class="bi bi-star text-warning"></i>
-                            <% } %>
-                        <% } %>
+                    <div>
+                      <div class="ibc-review-name"><%= rating.user_name %></div>
+                      <div class="ibc-review-date"><%= new Date(rating.created_at).toLocaleDateString('en-PK', {year:'numeric',month:'short',day:'numeric'}) %></div>
                     </div>
-                    <span class="text-muted">
-                        <%= product.rating_count %>
-                        <%= product.rating_count> 1 ? 'Ratings' : 'Rating' %>
-                    </span>
-                </div>
-
-                <hr>
-
-                <!-- Rating Form -->
-                <div class="card border-0 bg-light p-4 mt-3">
-                    <label class="fw-semibold mb-3 d-block text-secondary">
-                        <i class="bi bi-star me-2"></i>Rate this product
-                    </label>
-                    <form id="ratingForm">
-                        <div class="rating-input mb-4">
-                            <% for(let i=5; i>=1; i--) { %>
-                                <input type="radio" name="rating" value="<%= i %>" id="star<%= i %>">
-                                <label for="star<%= i %>">
-                                    <i class="bi bi-star-fill"></i>
-                                </label>
-                            <% } %>
-                        </div>
-                        <button type="submit" id="submitRatingBtn" class="btn btn-primary d-none"
-                            style="min-width: 150px;">
-                            <i class="bi bi-check-circle me-2"></i>Submit Rating
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="row">
-    <div id="tabs">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#description">Description</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#additional-info">Additional Info</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#reviews">Reviews</a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<div class="row tab-pane py-3" id="description">
-    <div class="col-lg-12">
-        <div class="card bg-transparent border-0">
-            <div class="card-body">
-                <h4 class="text-primary fw-semibold mb-3">
-                    Description
-                </h4>
-                <p class="text-muted">
-                    <%- product.description || 'No description available.' %>
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row tab-pane py-3" id="additional-info" style="display: none;">
-    <div class="col-lg-12">
-        <div class="card bg-transparent border-0">
-            <div class="card-body">
-                <h4 class="text-primary fw-semibold mb-3">
-                    Additional Info
-                </h4>
-               <% if (product.additional_info && Object.keys(product.additional_info).length> 0) { %>
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <tbody>
-                            <% Object.entries(product.additional_info).forEach(([key, value])=> { %>
-                                <tr>
-                                    <td class="fw-semibold" style="width: 50%;">
-                                        <%= key %>
-                                    </td>
-                                    <td>
-                                        <%= value %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </div>
-                <% } else { %>
-                    <p class="text-muted">No additional information available.</p>
-                <% } %>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row tab-pane py-3" id="reviews" style="display: none;">
-    <div class="col-lg-12">
-        <div class="card bg-transparent border-0">
-            <div class="card-body">
-                <h4 class="text-primary fw-semibold mb-3">
-                    Reviews
-                </h4>
-                <% if (ratings.length===0) { %>
-                    <p class="text-muted">No reviews yet.</p>
+                  </div>
+                  <div class="ibc-review-stars">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                      <% if(i <= Math.floor(rating.rating)) { %>
+                        <i class="bi bi-star-fill"></i>
+                      <% } else if(i === Math.ceil(rating.rating) && rating.rating % 1 > 0) { %>
+                        <i class="bi bi-star-half"></i>
+                      <% } else { %>
+                        <i class="bi bi-star"></i>
+                      <% } %>
                     <% } %>
-                        <% for (let rating of ratings) { %>
-                            <div class="card shadow-sm border-0 mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between w-100">
-                                        <div class="d-flex">
-                                            <img src="<%= rating.user_profile_photo || 'https://dummyimage.com/50x50/ced4da/6c757d.jpg' %>"
-                                                class="rounded-circle me-2" width="50" height="50">
-                                            <div class="d-flex flex-column">
-                                                <h6 class="mb-0">
-                                                    <%= rating.user_name %>
-                                                </h6>
-                                                <div class="mt-1">
-                                                    <% for(let i=1; i<=5; i++) { %>
-                                                        <% if(i <=Math.floor(rating.rating)) { %>
-                                                            <i class="bi bi-star-fill text-warning"></i>
-                                                            <% } else if(i===Math.ceil(rating.rating) && rating.rating %
-                                                                1> 0) { %>
-                                                                <i class="bi bi-star-half text-warning"></i>
-                                                                <% } else { %>
-                                                                    <i class="bi bi-star text-warning"></i>
-                                                                    <% } %>
-                                                                        <% } %>
-                                                </div>
-                                                <%if(rating.comment) {%>
-                                                    <p class="text-muted">
-                                                        <%= rating.comment %>
-                                                    </p>
-                                                    <%}%>
-                                            </div>
-                                        </div>
-
-                                        <div class="text-muted">
-                                            <%= new Date(rating.created_at).toLocaleDateString() %>
-                                        </div>
-                                        <%if(rating.comment) {%>
-                                            <p class="text-muted">
-                                                <%= rating.comment %>
-                                            </p>
-                                        <%}%>
-                                    </div>
-                                </div>
-                                <div class="text-muted">
-                                    <%= new Date(rating.created_at).toLocaleDateString() %>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
+                  </div>
+                  <% if (rating.comment) { %>
+                    <p class="ibc-review-text"><%= rating.comment %></p>
+                  <% } %>
+                </div>
+              <% } %>
             </div>
+          <% } %>
+
+          <!-- Rating Form -->
+          <div class="ibc-rating-form-section">
+            <h4><i class="bi bi-star"></i> Rate this product</h4>
+            <form id="ratingForm">
+              <div class="ibc-rating-input">
+                <% for(let i = 5; i >= 1; i--) { %>
+                  <input type="radio" name="rating" value="<%= i %>" id="star<%= i %>">
+                  <label for="star<%= i %>"><i class="bi bi-star-fill"></i></label>
+                <% } %>
+              </div>
+              <button type="submit" id="submitRatingBtn" class="ibc-btn ibc-btn-primary ibc-btn-sm" style="display:none">
+                <i class="bi bi-check-circle"></i> Submit Rating
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+
+    <!-- Quote Form Anchor -->
+    <div id="quote-form-anchor"></div>
+
+    <!-- WhatsApp & Quote Section -->
+    <div class="ibc-product-bottom-cta" style="margin-top:40px">
+      <div style="text-align:center;padding:32px;background:linear-gradient(135deg,var(--ibc-primary) 0%,var(--ibc-primary-light) 100%);border-radius:var(--ibc-radius-lg);color:var(--ibc-white)">
+        <h3 style="font-size:24px;font-weight:800;margin-bottom:8px">Need Help?</h3>
+        <p style="font-size:16px;color:rgba(255,255,255,.8);margin-bottom:24px">Get in touch with our team for pricing, availability, and bulk orders.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="https://wa.me/<%= settings.contact_number %>?text=<%= encodeURIComponent('Hello, I am interested in your IBC tanks. Please share pricing and availability for: ' + product.name) %>"
+             class="ibc-btn ibc-btn-whatsapp ibc-btn-lg" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-whatsapp"></i> WhatsApp Now
+          </a>
+          <a href="/contact" class="ibc-btn ibc-btn-dark ibc-btn-lg">
+            <i class="bi bi-envelope"></i> Contact Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script>
-    /* Rating Form Submission */
-    document.getElementById('ratingForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
 
-        const rating = document.querySelector('input[name="rating"]:checked')?.value;
-        if (!rating) {
-            alert('Please select a rating');
-            return;
-        }
-
-        const productId = '<%= product.id %>';
-
-        try {
-            const response = await fetch(`/ratings/${productId}/create`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ rating: parseInt(rating) })
-            });
-
-            if (response.ok) {
-                // alert('Rating submitted successfully!');
-                window.location.reload();
-            } else if (response.status === 401) {
-                // Show auth modal
-                const modalElement = document.getElementById('authModal');
-                if (modalElement) {
-                    const modal = new bootstrap.Modal(modalElement);
-                    modal.show();
-                } else {
-                    window.location.href = '/auth/signin';
-                }
-            } else {
-                const data = await response.json();
-                alert(data.message || 'Failed to submit rating');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while submitting your rating');
-        }
-    });
-
-    /* Rating stars highlight */
-    document.querySelectorAll('.rating-input input').forEach(input => {
-        input.addEventListener('change', () => {
-            document.querySelectorAll('.rating-input label')
-                .forEach(l => l.classList.remove('active'));
-            input.nextElementSibling.classList.add('active');
-
-            // Show submit button when rating is selected
-            const submitBtn = document.getElementById('submitRatingBtn');
-            if (submitBtn) {
-                submitBtn.classList.remove('d-none');
-                submitBtn.classList.add('animate__animated', 'animate__fadeIn');
-            }
-        });
-    });
-
-    /* Tabs */
-    const tabs = document.querySelectorAll('.nav-tabs a');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            const targetTab = tab.getAttribute('href');
-            document.querySelectorAll('.tab-pane')
-                .forEach(p => p.style.display = 'none');
-
-            document.querySelector(targetTab).style.display = 'block';
-        });
-    });
+<!-- Product Images Data for Fancybox -->
+<script type="application/json" id="product-images-data">
+<% if(typeof productImages === 'undefined') { %><% }else{ %><%- JSON.stringify(productImages) %><% } %>
 </script>
