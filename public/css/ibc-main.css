@@ -303,6 +303,11 @@ img{max-width:100%;height:auto}
 .ibc-slider-dot.active{background:var(--ibc-primary);width:28px;border-radius:5px}
 @media(max-width:575px){.ibc-slider-btn{width:36px;height:36px;font-size:14px}.ibc-slider-prev{left:-4px}.ibc-slider-next{right:-4px}}
 
+/* Filter Card */
+.ibc-filter-card{background:var(--ibc-gray-100);border-radius:var(--ibc-radius-md);padding:20px;border:1px solid rgba(0,0,0,.04)}
+.ibc-filter-card input,.ibc-filter-card select{background:var(--ibc-white)!important}
+@media(max-width:575px){.ibc-filter-card form>*{min-width:100%!important}.ibc-filter-card form>div:last-child{flex-direction:row}}
+
 /* Product Show Page */
 .ibc-product-gallery{margin-bottom:24px}
 .ibc-product-gallery-main{position:relative;border-radius:var(--ibc-radius-md);overflow:hidden;background:var(--ibc-gray-100);border:1px solid rgba(0,0,0,.04);cursor:zoom-in}
