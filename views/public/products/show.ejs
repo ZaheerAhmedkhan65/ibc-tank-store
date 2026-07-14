@@ -247,6 +247,9 @@
   </div>
 </div>
 
+<!-- Quote Form -->
+<%- include('../partials/_quote_form.ejs') %>
+
 <!-- Product Images Data for Fancybox -->
 <script type="application/json" id="product-images-data">
 <% if(typeof productImages === 'undefined') { %><% }else{ %><%- JSON.stringify(productImages) %><% } %>
