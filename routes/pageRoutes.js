@@ -294,6 +294,14 @@ router.get('/contact', function(req, res) {
   });
 });
 
+router.get('/warehouse-locations', function(req, res) {
+  res.render('public/pages/warehouse-locations', {
+    title: 'Warehouse Locations',
+    path: '/warehouse-locations',
+    canonicalPath: '/warehouse-locations'
+  });
+});
+
 router.get('/faqs', function(req, res) {
   res.render('public/pages/faq', { title: 'FAQs' });
 });

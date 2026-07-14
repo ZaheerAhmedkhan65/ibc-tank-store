@@ -1,0 +1,230 @@
+<!-- Warehouse Locations Page -->
+<section class="ibc-page-hero">
+  <div class="ibc-container">
+    <div class="ibc-breadcrumb">
+      <a href="/">Home</a> <i class="bi bi-chevron-right" style="font-size:10px"></i> <span>Warehouse Locations</span>
+    </div>
+    <h1>Our Warehouse Locations</h1>
+    <p>Visit our warehouses across Pakistan or get your IBC tanks delivered nationwide. We have facilities in Lahore, Rawalpindi, and Karachi.</p>
+  </div>
+</section>
+
+<!-- Locations Grid -->
+<section class="ibc-section ibc-bg-white">
+  <div class="ibc-container">
+    <div class="ibc-locations-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:30px">
+
+      <!-- Lahore - Head Office -->
+      <div class="ibc-location-card" style="background:var(--ibc-white);border-radius:var(--ibc-radius);box-shadow:var(--ibc-shadow);overflow:hidden;border:1px solid var(--ibc-gray-200);transition:var(--ibc-transition)">
+        <div style="background:linear-gradient(135deg,var(--ibc-primary),#1a3a6b);padding:30px;text-align:center;color:var(--ibc-white)">
+          <div style="font-size:48px;margin-bottom:12px"><i class="bi bi-building"></i></div>
+          <h3 style="color:var(--ibc-white);margin:0;font-size:22px">Head Office — Lahore</h3>
+          <span style="display:inline-block;background:var(--ibc-accent);color:var(--ibc-dark);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-top:8px">Main Warehouse</span>
+        </div>
+        <div style="padding:24px">
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <i class="bi bi-geo-alt-fill" style="color:var(--ibc-primary);font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Address</strong>
+              <span style="color:var(--ibc-gray-600);line-height:1.6">New Bilal Gunj Scheme,<br>Near KTD Herbense Pura,<br>Lahore, Punjab</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <i class="bi bi-telephone-fill" style="color:var(--ibc-primary);font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Phone</strong>
+              <a href="tel:+<%= settings.contact_number %>" style="color:var(--ibc-gray-600);text-decoration:none"><%= settings.contact_number %></a>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <i class="bi bi-clock-fill" style="color:var(--ibc-primary);font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Hours</strong>
+              <span style="color:var(--ibc-gray-600)">Monday — Saturday: 9 AM — 6 PM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rawalpindi -->
+      <div class="ibc-location-card" style="background:var(--ibc-white);border-radius:var(--ibc-radius);box-shadow:var(--ibc-shadow);overflow:hidden;border:1px solid var(--ibc-gray-200);transition:var(--ibc-transition)">
+        <div style="background:linear-gradient(135deg,#2d5a27,#1a3a15);padding:30px;text-align:center;color:var(--ibc-white)">
+          <div style="font-size:48px;margin-bottom:12px"><i class="bi bi-shop"></i></div>
+          <h3 style="color:var(--ibc-white);margin:0;font-size:22px">Rawalpindi</h3>
+          <span style="display:inline-block;background:var(--ibc-accent);color:var(--ibc-dark);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-top:8px">Partner Location</span>
+        </div>
+        <div style="padding:24px">
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <i class="bi bi-geo-alt-fill" style="color:#2d5a27;font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Address</strong>
+              <span style="color:var(--ibc-gray-600);line-height:1.6">Irfan Saleem Traders,<br>Near Novelty Plaza, Raja Bazar,<br>Rawalpindi, Punjab</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <i class="bi bi-telephone-fill" style="color:#2d5a27;font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Phone</strong>
+              <a href="tel:+<%= settings.contact_number %>" style="color:var(--ibc-gray-600);text-decoration:none"><%= settings.contact_number %></a>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <i class="bi bi-clock-fill" style="color:#2d5a27;font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Hours</strong>
+              <span style="color:var(--ibc-gray-600)">Monday — Saturday: 9 AM — 6 PM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Karachi -->
+      <div class="ibc-location-card" style="background:var(--ibc-white);border-radius:var(--ibc-radius);box-shadow:var(--ibc-shadow);overflow:hidden;border:1px solid var(--ibc-gray-200);transition:var(--ibc-transition)">
+        <div style="background:linear-gradient(135deg,#8b4513,#5a2d0c);padding:30px;text-align:center;color:var(--ibc-white)">
+          <div style="font-size:48px;margin-bottom:12px"><i class="bi bi-warehouse"></i></div>
+          <h3 style="color:var(--ibc-white);margin:0;font-size:22px">Karachi</h3>
+          <span style="display:inline-block;background:var(--ibc-accent);color:var(--ibc-dark);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-top:8px">Warehouse</span>
+        </div>
+        <div style="padding:24px">
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <i class="bi bi-geo-alt-fill" style="color:#8b4513;font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Address</strong>
+              <span style="color:var(--ibc-gray-600);line-height:1.6">Mehran Town,<br>Near TCS Warehouse, Korangi Industrial Estate,<br>Karachi, Sindh</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <i class="bi bi-telephone-fill" style="color:#8b4513;font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Phone</strong>
+              <a href="tel:+<%= settings.contact_number %>" style="color:var(--ibc-gray-600);text-decoration:none"><%= settings.contact_number %></a>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <i class="bi bi-clock-fill" style="color:#8b4513;font-size:20px;flex-shrink:0;margin-top:2px"></i>
+            <div>
+              <strong style="display:block;margin-bottom:4px;color:var(--ibc-dark)">Hours</strong>
+              <span style="color:var(--ibc-gray-600)">Monday — Saturday: 9 AM — 6 PM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Delivery & Payment Info -->
+<section class="ibc-section" style="background:var(--ibc-gray-100)">
+  <div class="ibc-container">
+    <h2 class="ibc-section-title ibc-animate">Delivery & Payment Options</h2>
+    <div class="ibc-accent-line"></div>
+    <p class="ibc-section-subtitle ibc-animate">We offer flexible delivery and payment options to serve customers across all cities in Pakistan.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin-top:40px">
+
+      <!-- Cash on Delivery Cities -->
+      <div class="ibc-info-card" style="background:var(--ibc-white);border-radius:var(--ibc-radius);padding:30px;box-shadow:var(--ibc-shadow);border:1px solid var(--ibc-gray-200)">
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:48px;color:var(--ibc-primary);margin-bottom:12px"><i class="bi bi-cash-stack"></i></div>
+          <h3 style="color:var(--ibc-dark);margin:0">Cash on Delivery Cities</h3>
+        </div>
+        <p style="color:var(--ibc-gray-600);text-align:center;margin-bottom:20px">We have our own warehouses and delivery vehicles in these cities. Our driver delivers the tank and collects cash payment on the spot.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--ibc-gray-100);border-radius:var(--ibc-radius-sm)">
+            <i class="bi bi-check-circle-fill" style="color:#2d5a27;font-size:18px"></i>
+            <span style="font-weight:600;color:var(--ibc-dark)">Lahore</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--ibc-gray-100);border-radius:var(--ibc-radius-sm)">
+            <i class="bi bi-check-circle-fill" style="color:#2d5a27;font-size:18px"></i>
+            <span style="font-weight:600;color:var(--ibc-dark)">Karachi</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--ibc-gray-100);border-radius:var(--ibc-radius-sm)">
+            <i class="bi bi-check-circle-fill" style="color:#2d5a27;font-size:18px"></i>
+            <span style="font-weight:600;color:var(--ibc-dark)">Rawalpindi</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--ibc-gray-100);border-radius:var(--ibc-radius-sm)">
+            <i class="bi bi-check-circle-fill" style="color:#2d5a27;font-size:18px"></i>
+            <span style="font-weight:600;color:var(--ibc-dark)">Islamabad</span>
+          </div>
+        </div>
+        <p style="color:var(--ibc-gray-500);font-size:13px;margin-top:16px;text-align:center;font-style:italic">
+          <i class="bi bi-truck"></i> Our own vehicle delivers and collects cash on delivery
+        </p>
+      </div>
+
+      <!-- Other Cities - Cargo/Builty -->
+      <div class="ibc-info-card" style="background:var(--ibc-white);border-radius:var(--ibc-radius);padding:30px;box-shadow:var(--ibc-shadow);border:1px solid var(--ibc-gray-200)">
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:48px;color:#8b4513;margin-bottom:12px"><i class="bi bi-truck"></i></div>
+          <h3 style="color:var(--ibc-dark);margin:0">Other Cities — Cargo / Builty</h3>
+        </div>
+        <p style="color:var(--ibc-gray-600);text-align:center;margin-bottom:20px">For cities outside our COD network, we ship via reliable cargo services. <strong>100% payment in advance</strong> is required to confirm the order.</p>
+        <div style="background:var(--ibc-gray-100);border-radius:var(--ibc-radius-sm);padding:20px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <i class="bi bi-percent" style="color:var(--ibc-primary);font-size:24px"></i>
+            <div>
+              <strong style="display:block;color:var(--ibc-dark)">100% Advance Payment Required</strong>
+              <span style="color:var(--ibc-gray-600);font-size:14px">Full payment is required in advance to process and ship the order to cities outside our COD network. Once payment is confirmed, we dispatch your tank via cargo service with tracking details provided.</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <i class="bi bi-box-seam" style="color:#2d5a27;font-size:24px"></i>
+            <div>
+              <strong style="display:block;color:var(--ibc-dark)">Nationwide Coverage</strong>
+              <span style="color:var(--ibc-gray-600);font-size:14px">We deliver to all cities across Pakistan through trusted cargo and transport partners.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Why Choose Us -->
+      <div class="ibc-info-card" style="background:var(--ibc-white);border-radius:var(--ibc-radius);padding:30px;box-shadow:var(--ibc-shadow);border:1px solid var(--ibc-gray-200)">
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:48px;color:var(--ibc-accent);margin-bottom:12px"><i class="bi bi-star-fill"></i></div>
+          <h3 style="color:var(--ibc-dark);margin:0">Why Buy From Us?</h3>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0">
+          <li style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--ibc-gray-200)">
+            <i class="bi bi-check-lg" style="color:#2d5a27;font-size:18px;flex-shrink:0;margin-top:2px"></i>
+            <span style="color:var(--ibc-gray-700)">Own warehouses in Lahore, Rawalpindi & Karachi</span>
+          </li>
+          <li style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--ibc-gray-200)">
+            <i class="bi bi-check-lg" style="color:#2d5a27;font-size:18px;flex-shrink:0;margin-top:2px"></i>
+            <span style="color:var(--ibc-gray-700)">Cash on delivery in 4 major cities</span>
+          </li>
+          <li style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--ibc-gray-200)">
+            <i class="bi bi-check-lg" style="color:#2d5a27;font-size:18px;flex-shrink:0;margin-top:2px"></i>
+            <span style="color:var(--ibc-gray-700)">Nationwide delivery via cargo/builty</span>
+          </li>
+          <li style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--ibc-gray-200)">
+            <i class="bi bi-check-lg" style="color:#2d5a27;font-size:18px;flex-shrink:0;margin-top:2px"></i>
+            <span style="color:var(--ibc-gray-700)">5000+ tanks delivered across Pakistan</span>
+          </li>
+          <li style="display:flex;align-items:flex-start;gap:12px;padding:10px 0">
+            <i class="bi bi-check-lg" style="color:#2d5a27;font-size:18px;flex-shrink:0;margin-top:2px"></i>
+            <span style="color:var(--ibc-gray-700)">Trusted by 500+ happy customers</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Quote Form -->
+<%- include('../partials/_quote_form.ejs') %>
+
+<!-- CTA -->
+<section class="ibc-cta-banner">
+  <div class="ibc-container">
+    <h2>Ready to Order Your IBC Tank?</h2>
+    <p>Contact us today for pricing, availability, and delivery options. We'll help you choose the right tank and arrange delivery to your city.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="https://wa.me/<%= settings.contact_number %>?text=Hello%2C%20I%20am%20interested%20in%20your%20IBC%20tanks.%20Please%20share%20pricing%20and%20delivery%20options."
+        class="ibc-btn ibc-btn-whatsapp ibc-btn-lg" target="_blank" rel="noopener noreferrer"><i
+          class="bi bi-whatsapp"></i> WhatsApp Us</a>
+      <a href="/contact" class="ibc-btn ibc-btn-dark ibc-btn-lg"><i class="bi bi-envelope"></i> Contact Us</a>
+    </div>
+  </div>
+</section>
