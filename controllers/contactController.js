@@ -12,7 +12,8 @@ const contactController = {
 
     async submit(req, res) {
         const { name, email, message, contact_no } = req.body;
-        const phoneRegex = /^\+[1-9]\d{7,14}$/;
+        // Accept Pakistani numbers: +92XXXXXXXXX (with country code) or 03XXXXXXXXX (local format)
+        const phoneRegex = /^(\+92\d{10}|03\d{9}|0\d{9})$/;
 
         if (!phoneRegex.test(contact_no)) {
             req.flash('error', 'Invalid phone number format.');
