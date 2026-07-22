@@ -109,7 +109,11 @@ app.use((req, res, next) => {
     res.locals.condition = '';
     res.locals.latestProducts = '';
     res.locals.searchQuery = '';
-    if (req.path.startsWith("/admin")) {
+
+    // Set layout
+    if (res.locals.user?.role !== 'developer' && res.locals.settings.restrict_for_payment) {
+        res.locals.layout = "layouts/dev_payment";
+    } else if (req.path.startsWith("/admin")) {
         res.locals.layout = "layouts/admin";
     } else {
         res.locals.layout = "layouts/public";
