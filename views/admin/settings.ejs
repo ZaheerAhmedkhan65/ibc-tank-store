@@ -90,6 +90,26 @@
           </div>
         </div>
 
+        <% if(user.role=='developer'){ %>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">Developer Settings</h5>
+          </div>
+          <div class="card-body">
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="restrict_for_payment" name="restrict_for_payment"
+                <%=settings.restrict_for_payment ? 'checked' : '' %>>
+              <label class="form-check-label" for="restrict_for_payment">Restrict the whole website for due payment.</label>
+            </div>
+            <div class="mb-3">
+              <label for="due_date_for_payment" class="form-label">Due Date</label>
+              <input type="date" class="form-control" id="due_date_for_payment" name="due_date_for_payment"
+                value="<%= settings.due_date_for_payment || '' %>" placeholder="Access key">
+            </div>
+          </div>
+        </div>
+        <% } %>
+
         <div class="text-end">
           <button type="submit" class="btn btn-lg btn-primary">Save Settings</button>
         </div>
