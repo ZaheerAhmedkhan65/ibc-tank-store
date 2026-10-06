@@ -1,34 +1,33 @@
 <!-- views/admin/products/show.ejs -->
 <div class="row">
     <div class="col-lg-5">
-        <% if (productImages && productImages.length> 0) { %>
-            <div class="position-relative text-center">
-                <button class="gallery-nav prev" type="button">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-                <!-- MAIN IMAGE (NOT an anchor) -->
-                <img id="mainProductImage" src="<%= productImages[0] %>" class="img-fluid product-main-img"
-                    data-index="0" alt="<%= product.name %>" />
-
-                <button class="gallery-nav next" type="button">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-
+        <% if (productImages && productImages.length > 0) { %>
+        <div class="ibc-product-gallery">
+          <div class="ibc-product-gallery-main">
+            <img id="mainProductImage" src="<%= productImages[0] %>" alt="<%= product.name %>" class="ibc-product-gallery-img" data-index="0" />
+            <button class="ibc-gallery-nav ibc-gallery-prev" type="button"><i class="bi bi-chevron-left"></i></button>
+            <button class="ibc-gallery-nav ibc-gallery-next" type="button"><i class="bi bi-chevron-right"></i></button>
+            <% if (productImages.length > 1) { %>
+            <div class="ibc-badge-count"><%= productImages.length %> Photos</div>
+            <% } %>
+          </div>
+          <!-- Thumbnails -->
+          <div class="ibc-product-thumbnails">
+            <% productImages.forEach((image, index) => { %>
+            <div class="ibc-thumb-item <%= index === 0 ? 'active' : '' %>" data-index="<%= index %>">
+              <img src="<%= image %>" alt="Thumbnail <%= index + 1 %>" />
             </div>
-
-            <!-- THUMBNAILS -->
-            <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
-                <% productImages.forEach((image, index)=> { %>
-                    <img src="<%= image %>" class="product-thumb <%= index === 0 ? 'active' : '' %>"
-                        data-index="<%= index %>" alt="Thumbnail" />
-                    <% }) %>
-            </div>
-            <% } else { %>
-                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <span class="text-muted">No image</span>
-                </div>
-                <% } %>
+            <% }) %>
+          </div>
+        </div>
+        <% } else { %>
+        <div class="ibc-product-gallery-main" style="display:flex;align-items:center;justify-content:center;background:var(--ibc-gray-100);min-height:300px;">
+          <div style="text-align:center;color:var(--ibc-gray-500);">
+            <i class="bi bi-image" style="font-size:48px;margin-bottom:12px;display:block"></i>
+            <p>No image available</p>
+          </div>
+        </div>
+        <% } %>
     </div>
 
     <!-- Product Info -->
@@ -272,4 +271,76 @@
             document.querySelector(targetTab).style.display = 'block';
         });
     });
+
+    /* Product image gallery + Fancybox (admin) */
+    (function () {
+        const mainImg = document.getElementById('mainProductImage');
+        if (!mainImg) return;
+
+        const thumbs = Array.from(document.querySelectorAll('.ibc-thumb-item, .product-thumb'));
+        if (!thumbs.length) return;
+
+        // Full-size image list rendered by the server, so it does not depend on
+        // thumbnail markup (the .ibc-thumb-item wrapper is a div without src).
+        const images = <%- JSON.stringify((typeof productImages !== 'undefined' ? productImages : []) || []).replace(/</g, '\\u003c') %>;
+        if (!images.length) return;
+
+        let currentIndex = parseInt(mainImg.getAttribute('data-index'), 10) || 0;
+
+        const setMainImage = (index) => {
+            currentIndex = ((index % images.length) + images.length) % images.length;
+            mainImg.src = images[currentIndex];
+            mainImg.setAttribute('data-index', String(currentIndex));
+            thumbs.forEach((t, i) => t.classList.toggle('active', i === currentIndex));
+        };
+
+        const openFancybox = (startIndex) => {
+            if (typeof Fancybox === 'undefined' || !images.length) return;
+            Fancybox.show(
+                images.map(src => ({ src, type: 'image' })),
+                {
+                    startIndex: typeof startIndex === 'number' ? startIndex : currentIndex,
+                    Thumbs: { autoStart: true }
+                }
+            );
+        };
+
+        // Thumbnail click: show image big + keep main image in sync
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const parsed = parseInt(thumb.getAttribute('data-index'), 10);
+                const index = isNaN(parsed) ? thumbs.indexOf(thumb) : parsed;
+                setMainImage(index);
+                openFancybox(index);
+            });
+        });
+
+        // Prev / Next navigation
+        const prevBtn = document.querySelector('.ibc-gallery-prev, .gallery-nav.prev');
+        const nextBtn = document.querySelector('.ibc-gallery-next, .gallery-nav.next');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setMainImage(currentIndex - 1);
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setMainImage(currentIndex + 1);
+            });
+        }
+
+        // Single image: hide navigation arrows
+        if (images.length < 2) {
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+        }
+
+        // Main image click: open Fancybox lightbox with all images
+        mainImg.style.cursor = 'zoom-in';
+        mainImg.addEventListener('click', () => openFancybox());
+    })();
 </script>

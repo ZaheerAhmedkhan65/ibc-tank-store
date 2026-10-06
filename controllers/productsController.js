@@ -63,7 +63,7 @@ const productController = {
             const maxPrice = parseFloat(req.query.maxPrice) || 1000;
             const condition = req.query.condition || '';
 
-            if (req.user && req.user.role === 'admin' && req.baseUrl === '/admin') {
+            if (req.user && req.user.role === 'admin' || req.user.role === 'developer' && req.baseUrl === '/admin') {
                 return res.render('admin/products/index', {
                     title: 'Products',
                     products,
@@ -80,6 +80,7 @@ const productController = {
                 categories,
                 searchQuery,
                 selectedCategory,
+                viewPage: 'products',
                 minPrice,
                 maxPrice,
                 condition,
@@ -160,7 +161,7 @@ const productController = {
                 price: parseInt(product.price),
             };
 
-            const view = (req.user && req.user.role === 'admin' && req.baseUrl === '/admin')
+            const view = (req.user && (req.user.role === 'admin' || req.user.role === 'developer') && req.baseUrl === '/admin')
                 ? 'admin/products/show'
                 : 'public/products/show';
 

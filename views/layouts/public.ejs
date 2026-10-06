@@ -12,24 +12,19 @@
     <%= typeof metaTitle !=='undefined' ? metaTitle : (typeof title !=='undefined' ? title + ' | ' : '' )
       + 'IBC Tank Store - Pakistan\' s Leading IBC Tank Supplier' %>
   </title>
-  <meta name="description"
-    content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Pakistan\'s trusted supplier of 1000 Liter IBC Tanks for water, chemical, fertilizer, and industrial storage. Nationwide delivery, bulk orders available. Get a free quote today!' %>">
-  <meta name="keywords"
-    content="<%= typeof metaKeywords !== 'undefined' ? metaKeywords : 'IBC Tank Pakistan, IBC Tank Lahore, 1000 Liter Water Tank, IBC Tank Price Pakistan, Chemical Storage Tank, Food Grade IBC Tank' %>">
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Pakistan\'s trusted supplier of 1000 Liter IBC Tanks for water, chemical, fertilizer, and industrial storage. Nationwide delivery, bulk orders available. Get a free quote today!' %>">
+  <meta name="keywords" content="<%= typeof metaKeywords !== 'undefined' ? metaKeywords : 'IBC Tank Pakistan, IBC Tank Lahore, 1000 Liter Water Tank, IBC Tank Price Pakistan, Chemical Storage Tank, Food Grade IBC Tank' %>">
 
   <!-- Open Graph -->
-  <meta property="og:title"
-    content="<%= typeof metaTitle !== 'undefined' ? metaTitle : 'IBC Tank Store - Pakistan\'s Leading IBC Tank Supplier' %>">
-  <meta property="og:description"
-    content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Pakistan\'s trusted supplier of 1000 Liter IBC Tanks. Water, chemical, fertilizer & industrial storage tanks with nationwide delivery.' %>">
+  <meta property="og:title" content="<%= typeof metaTitle !== 'undefined' ? metaTitle : 'IBC Tank Store - Pakistan\'s Leading IBC Tank Supplier' %>">
+  <meta property="og:description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : 'Pakistan\'s trusted supplier of 1000 Liter IBC Tanks. Water, chemical, fertilizer & industrial storage tanks with nationwide delivery.' %>">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://ibctankstore.com<%= typeof path !== 'undefined' ? path : '/' %>">
   <meta property="og:site_name" content="IBC Tank Store">
   <meta property="og:locale" content="en_PK">
 
   <!-- Canonical -->
-  <link rel="canonical"
-    href="https://ibctankstore.com<%= typeof canonicalPath !== 'undefined' ? canonicalPath : '/' %>">
+  <link rel="canonical" href="https://ibctankstore.com<%= typeof canonicalPath !== 'undefined' ? canonicalPath : '/' %>">
 
   <!-- Favicon -->
   <link href="/img/brand/favicon.ico" rel="icon">
@@ -52,10 +47,12 @@
 
   <%- include('../shared/_styles') %>
 
-    <!-- Schema.org Structured Data -->
-    <% if (typeof schemaMarkup !=='undefined' && schemaMarkup) { %>
-      <script type="application/ld+json"><%- JSON.stringify(schemaMarkup) %></script>
-      <% } %>
+  <!-- Schema.org Structured Data -->
+  <% if (typeof schemaMarkup !=='undefined' && schemaMarkup) { %>
+  <script type="application/ld+json">
+    <%- JSON.stringify(schemaMarkup) %>
+  </script>
+  <% } %>
 </head>
 
 <body>
@@ -86,40 +83,37 @@
     </ul>
     <!-- Mobile Search -->
     <form action="/search" method="GET" style="position:relative;margin:16px 0">
-      <input type="text" name="q" placeholder="Search tanks..." 
-             style="width:100%;padding:10px 14px 10px 38px;border:2px solid rgba(255,255,255,.15);border-radius:var(--ibc-radius-sm);background:rgba(255,255,255,.06);color:var(--ibc-white);font-size:14px;transition:.3s;"
-             onfocus="this.style.borderColor='var(--ibc-accent)';this.style.background='rgba(255,255,255,.12)'" 
-             onblur="this.style.borderColor='rgba(255,255,255,.15)';this.style.background='rgba(255,255,255,.06)'">
+      <input type="text" name="q" placeholder="Search tanks..." style="width:100%;padding:10px 14px 10px 38px;border:2px solid rgba(255,255,255,.15);border-radius:var(--ibc-radius-sm);background:rgba(255,255,255,.06);color:var(--ibc-white);font-size:14px;transition:.3s;" onfocus="this.style.borderColor='var(--ibc-accent)';this.style.background='rgba(255,255,255,.12)'" onblur="this.style.borderColor='rgba(255,255,255,.15)';this.style.background='rgba(255,255,255,.06)'">
       <i class="bi bi-search" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:15px"></i>
     </form>
     <div style="padding-top:16px; border-top:1px solid rgba(255,255,255,0.1);">
       <% if (typeof user !== 'undefined' && user) { %>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-          <% if (user.profile_photo) { %>
-            <img src="<%= user.profile_photo %>" alt="<%= user.name %>" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);">
-          <% } else { %>
-            <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--ibc-accent);color:var(--ibc-dark);font-weight:700;font-size:18px;"><%= user.name.charAt(0).toUpperCase() %></span>
-          <% } %>
-          <div>
-            <div style="font-weight:600;color:var(--ibc-white);font-size:15px;"><%= user.name %></div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.6);"><%= user.email || '' %></div>
-          </div>
-        </div>
-        <% if (user.role === 'admin') { %>
-          <a href="/admin/dashboard" class="ibc-btn ibc-btn-outline ibc-btn-sm" style="width:100%;margin-bottom:10px;justify-content:center;border-color:rgba(255,255,255,0.3);color:var(--ibc-white);">
-            <i class="bi bi-speedometer2"></i> Dashboard
-          </a>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <% if (user.profile_photo) { %>
+        <img src="<%= user.profile_photo %>" alt="<%= user.name %>" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);">
+        <% } else { %>
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--ibc-accent);color:var(--ibc-dark);font-weight:700;font-size:18px;"><%= user.name.charAt(0).toUpperCase() %></span>
         <% } %>
-        <form action="/auth/logout" method="POST" style="margin:0;">
-          <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="ibc-btn ibc-btn-outline ibc-btn-sm" style="width:100%;justify-content:center;border-color:rgba(255,255,255,0.3);color:var(--ibc-white);">
-            <i class="bi bi-box-arrow-right"></i> Sign Out
-          </button>
-        </form>
-      <% } else { %>
-        <button onclick="showAuthModal();ibcCloseMobileMenu();" class="ibc-btn ibc-btn-primary" style="width:100%;justify-content:center;">
-          <i class="bi bi-person-fill"></i> Login
+        <div>
+          <div style="font-weight:600;color:var(--ibc-white);font-size:15px;"><%= user.name %></div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);"><%= user.email || '' %></div>
+        </div>
+      </div>
+      <% if (user.role === 'admin') { %>
+      <a href="/admin/dashboard" class="ibc-btn ibc-btn-outline ibc-btn-sm" style="width:100%;margin-bottom:10px;justify-content:center;border-color:rgba(255,255,255,0.3);color:var(--ibc-white);">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <% } %>
+      <form action="/auth/logout" method="POST" style="margin:0;">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="ibc-btn ibc-btn-outline ibc-btn-sm" style="width:100%;justify-content:center;border-color:rgba(255,255,255,0.3);color:var(--ibc-white);">
+          <i class="bi bi-box-arrow-right"></i> Sign Out
         </button>
+      </form>
+      <% } else { %>
+      <button onclick="showAuthModal();ibcCloseMobileMenu();" class="ibc-btn ibc-btn-primary" style="width:100%;justify-content:center;">
+        <i class="bi bi-person-fill"></i> Login
+      </button>
       <% } %>
     </div>
   </div>
@@ -128,44 +122,44 @@
   <script src="/js/bootstrap.min.js"></script>
   <%- include('../shared/_authModal') %>
 
-    <%- include('../public/partials/_header') %>
+  <%- include('../public/partials/_header') %>
 
-      <main class="ibc-main-content">
-        <%- body %>
-      </main>
+  <main class="ibc-main-content">
+    <%- body %>
+  </main>
 
-      <%- include('../public/partials/_footer') %>
+  <%- include('../public/partials/_footer') %>
 
-        <!-- WhatsApp Sticky Button -->
-        <div class="ibc-whatsapp-float">
-          <span class="ibc-whatsapp-tooltip">Chat with us!</span>
-          <a href="https://wa.me/<%= settings.contact_number %>?text=Hello%2C%20I%20am%20interested%20in%20your%20IBC%20tanks.%20Please%20share%20pricing%20and%20availability."
-            target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
-            <i class="bi bi-whatsapp"></i>
-          </a>
-        </div>
+  <!-- WhatsApp Sticky Button -->
+  <div class="ibc-whatsapp-float">
+    <span class="ibc-whatsapp-tooltip">Chat with us!</span>
+    <a href="https://wa.me/<%= settings.contact_number %>?text=Hello%2C%20I%20am%20interested%20in%20your%20IBC%20tanks.%20Please%20share%20pricing%20and%20availability." target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+      <i class="bi bi-whatsapp"></i>
+    </a>
+  </div>
 
-        <!-- Scripts -->
-        <script>
-          // Mobile Menu
-          function ibcOpenMobileMenu() {
-            document.getElementById('ibcMobileMenu').classList.add('ibc-open');
-            document.getElementById('ibcMobileOverlay').classList.add('ibc-open');
-            document.body.style.overflow = 'hidden';
-          }
-          function ibcCloseMobileMenu() {
-            document.getElementById('ibcMobileMenu').classList.remove('ibc-open');
-            document.getElementById('ibcMobileOverlay').classList.remove('ibc-open');
-            document.body.style.overflow = '';
-          }
+  <!-- Scripts -->
+  <script>
+    // Mobile Menu
+    function ibcOpenMobileMenu() {
+      document.getElementById('ibcMobileMenu').classList.add('ibc-open');
+      document.getElementById('ibcMobileOverlay').classList.add('ibc-open');
+      document.body.style.overflow = 'hidden';
+    }
 
-          // FAQ Toggle
-          document.addEventListener('click', function (e) {
-            if (e.target.closest('.ibc-faq-question')) {
-              var item = e.target.closest('.ibc-faq-item');
-              item.classList.toggle('ibc-open');
-            }
-          });
+    function ibcCloseMobileMenu() {
+      document.getElementById('ibcMobileMenu').classList.remove('ibc-open');
+      document.getElementById('ibcMobileOverlay').classList.remove('ibc-open');
+      document.body.style.overflow = '';
+    }
+
+    // FAQ Toggle
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.ibc-faq-question')) {
+        var item = e.target.closest('.ibc-faq-item');
+        item.classList.toggle('ibc-open');
+      }
+    });
 
     // Scroll Animations
     var observer = new IntersectionObserver(function(entries) {
@@ -174,7 +168,10 @@
           entry.target.classList.add('ibc-visible');
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
 
     // Close user dropdown on outside click
     document.addEventListener('click', function(e) {
@@ -191,20 +188,23 @@
         observer.observe(el);
       });
     });
-        </script>
+  </script>
 
-        <%- include('../shared/_scripts') %>
-        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-        <script src="/js/fancybox.js"></script>
+  <%- include('../shared/_scripts') %>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="/js/fancybox.js"></script>
 
-          <!-- Google tag (gtag.js) -->
-          <script async src="https://www.googletagmanager.com/gtag/js?id=G-L32FERKX51"></script>
-          <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('js', new Date());
-            gtag('config', 'G-L32FERKX51');
-          </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-L32FERKX51"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-L32FERKX51');
+  </script>
 </body>
 
 </html>
