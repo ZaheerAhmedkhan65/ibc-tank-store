@@ -24,7 +24,7 @@
                             </div>
                             <div class="col-md-4">
                               <label class="form-label fw-semibold">Icon (bi class)</label>
-                              <input type="text" class="form-control" name="icon" value="<%= v('icon') %>" placeholder="bi-droplet-fill">
+                              <input type="text" class="form-control" name="icon" value="<%= v('icon') %>" placeholder="Search icons… e.g. droplet" data-icon-picker autocomplete="off">
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
                               <div class="form-check form-switch">
@@ -93,6 +93,10 @@
     </form>
 </section>
 
+<!-- Bootstrap Icons API search + select combobox for "Icon (bi class)" fields -->
+<link rel="stylesheet" href="/admin/assets/css/icon-picker.css">
+<script src="/admin/assets/js/icon-picker.js"></script>
+
 <script>
     const rowTemplate = (type, index) => {
         const isFaq = type === 'faqs';
@@ -110,7 +114,7 @@
                     ${isFaq ? '' : `
                     <div class="col-md-2">
                         <label class="form-label small fw-semibold">Icon (bi class)</label>
-                        <input type="text" class="form-control form-control-sm" name="${type}[${index}][icon]" value="" placeholder="bi-droplet-fill">
+                        <input type="text" class="form-control form-control-sm" name="${type}[${index}][icon]" value="" placeholder="Search icons…" data-icon-picker autocomplete="off">
                     </div>`}
                     <div class="col-md-1">
                         <label class="form-label small fw-semibold">Order</label>
@@ -140,6 +144,11 @@
                 // (see public/admin/assets/js/tinymce.js).
                 if (typeof window.ibcInitTinyMCE === 'function') {
                     window.ibcInitTinyMCE(list.lastElementChild);
+                }
+                // Attach the icon search + select combobox to the new row's
+                // "Icon (bi class)" input (see /admin/assets/js/icon-picker.js).
+                if (typeof window.ibcInitIconPicker === 'function') {
+                    window.ibcInitIconPicker(list.lastElementChild);
                 }
             });
         });
