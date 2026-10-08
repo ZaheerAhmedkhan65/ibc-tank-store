@@ -66,48 +66,15 @@
         <p class="ibc-section-subtitle ibc-animate">Find the perfect IBC tank for your specific application. We stock a
             wide range of tanks for every industry.</p>
         <div class="ibc-categories-grid">
-            <a href="/water-ibc-tanks" class="ibc-category-card ibc-animate">
-                <div class="ibc-category-icon"><i class="bi bi-droplet-fill"></i></div>
-                <div class="ibc-category-info">
-                    <h3>Water IBC Tanks</h3>
-                    <p>1000L tanks for water storage</p>
-                </div>
-            </a>
-            <a href="/chemical-ibc-tanks" class="ibc-category-card ibc-animate">
-                <div class="ibc-category-icon"><i class="bi bi-droplet-half"></i></div>
-                <div class="ibc-category-info">
-                    <h3>Chemical IBC Tanks</h3>
-                    <p>Chemical-resistant storage</p>
-                </div>
-            </a>
-            <a href="/fertilizer-ibc-tanks" class="ibc-category-card ibc-animate">
-                <div class="ibc-category-icon"><i class="bi bi-flower1"></i></div>
-                <div class="ibc-category-info">
-                    <h3>Fertilizer IBC Tanks</h3>
-                    <p>Agriculture fertilizer tanks</p>
-                </div>
-            </a>
-            <a href="/food-grade-ibc-tanks" class="ibc-category-card ibc-animate">
-                <div class="ibc-category-icon"><i class="bi bi-cup-hot-fill"></i></div>
-                <div class="ibc-category-info">
-                    <h3>Food Grade IBC Tanks</h3>
-                    <p>Food-safe storage tanks</p>
-                </div>
-            </a>
-            <a href="/diesel-storage-tanks" class="ibc-category-card ibc-animate">
-                <div class="ibc-category-icon"><i class="bi bi-fuel-pump"></i></div>
-                <div class="ibc-category-info">
-                    <h3>Diesel Storage Tanks</h3>
-                    <p>Fuel & diesel storage</p>
-                </div>
-            </a>
-            <a href="/used-ibc-tanks" class="ibc-category-card ibc-animate">
-                <div class="ibc-category-icon"><i class="bi bi-recycle"></i></div>
-                <div class="ibc-category-info">
-                    <h3>Used IBC Tanks</h3>
-                    <p>Refurbished & affordable</p>
-                </div>
-            </a>
+            <% categories.slice(0, 6).forEach(function(category) { %>
+                <a href="/categories/<%= category.slug %>" class="ibc-category-card ibc-animate">
+                  <div class="ibc-category-icon"><i class="<%- category.icon %>"></i></div>
+                  <div class="ibc-category-info">
+                    <h3><%= category.name %></h3>
+                    <p><%- category.description %></p>
+                  </div>
+                </a>
+            <% }) %>
         </div>
     </div>
 </section>

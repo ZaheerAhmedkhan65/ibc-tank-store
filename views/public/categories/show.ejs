@@ -40,7 +40,7 @@
       </div>
       <div class="ibc-animate">
         <div style="background:linear-gradient(135deg,var(--ibc-primary) 0%,var(--ibc-primary-light) 100%);border-radius:var(--ibc-radius-lg);padding:40px;display:flex;align-items:center;justify-content:center;min-height:300px;color:#fff;font-size:120px">
-          <i class="bi <%= category.icon %>"></i>
+          <i class="<%= category.icon %>"></i>
         </div>
       </div>
     </div>
@@ -58,7 +58,7 @@
     <div class="ibc-features-grid">
       <%  category.applications.forEach(function(application){ %>
       <div class="ibc-feature-card ibc-animate">
-        <div class="ibc-feature-icon"><i class="bi <%= application.icon %>"></i></div>
+        <div class="ibc-feature-icon"><i class="<%= application.icon %>"></i></div>
         <h3>
           <%= application.title %>
         </h3>
