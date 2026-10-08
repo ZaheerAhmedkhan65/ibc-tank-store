@@ -1,27 +1,28 @@
 <!-- IBC Header -->
-<header class="ibc-header">
-  <!-- Top Bar -->
-  <div class="ibc-topbar ibc-bg-dark">
-    <div class="ibc-container">
-      <div class="ibc-topbar-inner">
-        <div class="ibc-topbar-left">
-          <a href="tel:+<%= settings.contact_number %>"><i class="bi bi-telephone-fill"></i>
-            <%= settings.contact_number %>
-          </a>
-          <a href="mailto:info@ibctankstore.com" class="d-none d-md-inline"><i class="bi bi-envelope-fill"></i>
-            info@ibctankstore.com</a>
-        </div>
-        <div class="ibc-topbar-right">
-          <span><i class="bi bi-truck"></i> Nationwide Delivery</span>
-          <span class="d-none d-sm-inline"><i class="bi bi-clock"></i> Mon-Sat: 9AM - 6PM</span>
-        </div>
+<!-- Top Bar — sits above the sticky navbar so it scrolls away naturally,
+     leaving a compact navbar while browsing (no JS, no layout shift). -->
+<div class="ibc-topbar ibc-bg-dark">
+  <div class="ibc-container">
+    <div class="ibc-topbar-inner">
+      <div class="ibc-topbar-left">
+        <a href="tel:+<%= settings.contact_number %>"><i class="bi bi-telephone-fill"></i>
+          <%= settings.contact_number %>
+        </a>
+        <a href="mailto:info@ibctankstore.com" class="d-none d-md-inline"><i class="bi bi-envelope-fill"></i>
+          info@ibctankstore.com</a>
+      </div>
+      <div class="ibc-topbar-right">
+        <span><i class="bi bi-truck"></i> Nationwide Delivery</span>
+        <span class="d-none d-sm-inline"><i class="bi bi-clock"></i> Mon-Sat: 9AM - 6PM</span>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Main Navbar -->
+<!-- Sticky Navbar -->
+<header class="ibc-header" id="ibcHeader">
   <div class="ibc-container">
-    <nav class="ibc-navbar">
+    <nav class="ibc-navbar" aria-label="Primary">
       <!-- Logo -->
       <a href="/" class="ibc-logo">
         <img src="/img/brand/logo.png" alt="IBC Tank Store - Pakistan's Leading IBC Tank Supplier">
@@ -32,72 +33,173 @@
       <% var currentPath=(typeof path !=='undefined' && path) ? path : '/' ; function isActive(href) { if (href==='/' )
         return currentPath==='/' || currentPath==='' ; return currentPath.indexOf(href)===0; } %>
         <ul class="ibc-nav-links">
-          <li><a href="/" class="<%= isActive('/') ? 'ibc-active' : '' %>">Home</a></li>
-          <li><a href="/water-ibc-tanks" class="<%= isActive('/water-ibc-tanks') ? 'ibc-active' : '' %>">Water Tanks</a>
-          </li>
-          <li><a href="/chemical-ibc-tanks" class="<%= isActive('/chemical-ibc-tanks') ? 'ibc-active' : '' %>">Chemical
-              Tanks</a></li>
-          <li><a href="/fertilizer-ibc-tanks"
-              class="<%= isActive('/fertilizer-ibc-tanks') ? 'ibc-active' : '' %>">Fertilizer Tanks</a></li>
-          <li><a href="/about" class="<%= isActive('/about') ? 'ibc-active' : '' %>">About</a></li>
-          <li><a href="/contact" class="<%= isActive('/contact') ? 'ibc-active' : '' %>">Contact</a></li>
+          <li><a href="/" class="<%= isActive('/') ? 'ibc-active' : '' %>"<%- isActive('/') ? ' aria-current="page"' : '' %>>Home</a></li>
+          <li><a href="/about" class="<%= isActive('/about') ? 'ibc-active' : '' %>"<%- isActive('/about') ? ' aria-current="page"' : '' %>>About</a></li>
+          <li><a href="/contact" class="<%= isActive('/contact') ? 'ibc-active' : '' %>"<%- isActive('/contact') ? ' aria-current="page"' : '' %>>Contact</a></li>
         </ul>
 
-        <!-- Desktop Search -->
-        <form action="/search" method="GET" class="ibc-header-search" style="display:none;position:relative">
-          <input type="text" name="q" placeholder="Search tanks..." 
-                 style="width:180px;padding:8px 14px 8px 36px;border:2px solid rgba(255,255,255,.2);border-radius:var(--ibc-radius-sm);background:rgba(255,255,255,.08);color:var(--ibc-white);font-size:14px;outline:none;transition:var(--ibc-transition)" 
-                 onfocus="this.style.borderColor='var(--ibc-accent)';this.style.background='rgba(255,255,255,.15)'" 
-                 onblur="this.style.borderColor='rgba(255,255,255,.2)';this.style.background='rgba(255,255,255,.08)'">
-          <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.5);font-size:14px"></i>
+        <!-- Desktop Search (≥992px) — the icon is the submit button -->
+        <form action="/search" method="GET" class="ibc-header-search" role="search">
+          <label class="ibc-sr-only" for="ibcHeaderSearchInput">Search tanks</label>
+          <input id="ibcHeaderSearchInput" type="search" name="q" autocomplete="off" placeholder="Search tanks..."
+            value="<%= typeof searchQuery !== 'undefined' && searchQuery ? searchQuery : '' %>">
+          <button type="submit" class="ibc-header-search-btn" aria-label="Search">
+            <i class="bi bi-search"></i>
+          </button>
         </form>
-        <style>
-          @media(min-width:992px){.ibc-header-search{display:block!important}}
-        </style>
 
-        <!-- Desktop CTA -->
+        <!-- Actions: mobile search toggle + login / account -->
         <div class="ibc-nav-cta">
+          <!-- Mobile search toggle (<992px) -->
+          <button type="button" class="ibc-icon-btn ibc-search-toggle" id="ibcSearchToggle"
+            aria-label="Open search" aria-expanded="false" aria-controls="ibcSearchPanel">
+            <i class="bi bi-search"></i>
+          </button>
+
           <!-- Login / User Profile -->
           <% if (typeof user !== 'undefined' && user) { %>
-            <div class="ibc-user-menu" style="position:relative;display:inline-flex;align-items:center">
-              <button class="ibc-user-btn" onclick="document.getElementById('ibcUserDropdown').classList.toggle('ibc-open')" style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,.2);border-radius:var(--ibc-radius-sm);padding:7px 12px;cursor:pointer;color:var(--ibc-white);font-size:14px;font-weight:500;transition:var(--ibc-transition)">
+            <div class="ibc-user-menu">
+              <button type="button" class="ibc-user-btn" id="ibcUserBtn"
+                aria-haspopup="true" aria-expanded="false" aria-controls="ibcUserDropdown">
                 <% if (user.profile_photo) { %>
-                  <img src="<%= user.profile_photo %>" alt="<%= user.name %>" style="width:28px;height:28px;border-radius:50%;object-fit:cover">
+                  <img src="<%= user.profile_photo %>" alt="<%= user.name %>" class="ibc-avatar">
                 <% } else { %>
-                  <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--ibc-accent);color:var(--ibc-dark);font-weight:700;font-size:13px"><%= user.name.charAt(0).toUpperCase() %></span>
+                  <span class="ibc-avatar-placeholder"><%= user.name.charAt(0).toUpperCase() %></span>
                 <% } %>
                 <span class="d-none d-lg-inline"><%= user.name.split(' ')[0] %></span>
-                <i class="bi bi-chevron-down" style="font-size:12px"></i>
+                <i class="bi bi-chevron-down"></i>
               </button>
-              <div id="ibcUserDropdown" style="position:absolute;top:calc(100% + 8px);right:0;background:var(--ibc-white);border-radius:var(--ibc-radius-sm);box-shadow:var(--ibc-shadow-lg);padding:8px 0;min-width:180px;display:none;z-index:100;border:1px solid rgba(0,0,0,.08)">
-                <div style="padding:10px 16px;border-bottom:1px solid var(--ibc-gray-300);margin-bottom:4px">
-                  <div style="font-weight:700;font-size:14px;color:var(--ibc-dark)"><%= user.name %></div>
-                  <div style="font-size:12px;color:var(--ibc-gray-500)"><%= user.email || '' %></div>
+              <div id="ibcUserDropdown" class="ibc-user-dropdown" aria-label="Account menu">
+                <div class="ibc-user-dropdown-head">
+                  <strong><%= user.name %></strong>
+                  <span><%= user.email || '' %></span>
                 </div>
-                <% if (user.role === 'admin') { %>
-                  <a href="/admin/dashboard" style="display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:14px;color:var(--ibc-gray-700);font-weight:500;transition:var(--ibc-transition);width:100%" onmouseover="this.style.background='var(--ibc-gray-100)';this.style.color='var(--ibc-primary)'" onmouseout="this.style.background='';this.style.color='var(--ibc-gray-700)'">
-                    <i class="bi bi-speedometer2" style="font-size:16px"></i> Dashboard
+                <% if (user.role === 'admin' || user.role === 'developer') { %>
+                  <a href="/admin/dashboard" class="ibc-user-dropdown-item">
+                    <i class="bi bi-speedometer2"></i> Dashboard
                   </a>
                 <% } %>
-                <form action="/auth/logout" method="POST" style="margin:0">
+                <form action="/auth/logout" method="POST">
                   <input type="hidden" name="_method" value="DELETE">
-                  <button type="submit" style="display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:14px;color:var(--ibc-gray-700);font-weight:500;transition:var(--ibc-transition);width:100%;cursor:pointer;background:none;border:none;text-align:left" onmouseover="this.style.background='var(--ibc-gray-100)';this.style.color='var(--ibc-danger)'" onmouseout="this.style.background='';this.style.color='var(--ibc-gray-700)'">
-                    <i class="bi bi-box-arrow-right" style="font-size:16px"></i> Sign Out
+                  <button type="submit" class="ibc-user-dropdown-item ibc-danger">
+                    <i class="bi bi-box-arrow-right"></i> Sign Out
                   </button>
                 </form>
               </div>
             </div>
           <% } else { %>
             <button class="ibc-btn ibc-btn-outline ibc-btn-sm" onclick="showAuthModal()">
-              <i class="bi bi-person-fill"></i> Login
+              <i class="bi bi-person-fill"></i> <span class="d-none d-sm-inline">Login</span>
             </button>
           <% } %>
         </div>
 
-        <!-- Hamburger (Mobile) -->
-        <button class="ibc-hamburger" onclick="ibcOpenMobileMenu()" aria-label="Open menu">
+        <!-- Mobile search panel — slides down below the navbar (<992px) -->
+        <div class="ibc-search-panel" id="ibcSearchPanel">
+          <form action="/search" method="GET" role="search">
+            <label class="ibc-sr-only" for="ibcMobileSearchInput">Search tanks</label>
+            <input id="ibcMobileSearchInput" type="search" name="q" autocomplete="off" placeholder="Search tanks..."
+              value="<%= typeof searchQuery !== 'undefined' && searchQuery ? searchQuery : '' %>">
+            <button type="submit" class="ibc-header-search-btn" aria-label="Search">
+              <i class="bi bi-search"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Hamburger (Mobile) — morphs into a close (×) when the menu is open -->
+        <button type="button" class="ibc-hamburger" id="ibcHamburger" onclick="ibcOpenMobileMenu()"
+          aria-label="Open menu" aria-expanded="false" aria-controls="ibcMobileMenu">
           <span></span><span></span><span></span>
         </button>
-    </nav>
+      </nav>
   </div>
 </header>
+
+
+<script>
+  (function () {
+    var header = document.getElementById('ibcHeader');
+    var searchToggle = document.getElementById('ibcSearchToggle');
+    var searchPanel = document.getElementById('ibcSearchPanel');
+    var mobileSearchInput = document.getElementById('ibcMobileSearchInput');
+    var userBtn = document.getElementById('ibcUserBtn');
+    var userDropdown = document.getElementById('ibcUserDropdown');
+
+    /* Compact + shadow the sticky header once the user scrolls */
+    var onScroll = function () {
+      if (!header) return;
+      header.classList.toggle('ibc-scrolled', window.scrollY > 10);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* Mobile search panel */
+    var setSearchPanel = function (open) {
+      if (!searchPanel || !searchToggle) return;
+      searchPanel.classList.toggle('ibc-open', open);
+      searchToggle.classList.toggle('ibc-active', open);
+      searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      searchToggle.setAttribute('aria-label', open ? 'Close search' : 'Open search');
+      if (open && mobileSearchInput) mobileSearchInput.focus();
+    };
+    if (searchToggle) {
+      searchToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setSearchPanel(!searchPanel.classList.contains('ibc-open'));
+      });
+    }
+
+    /* Account dropdown */
+    var setUserDropdown = function (open) {
+      if (!userDropdown || !userBtn) return;
+      userDropdown.classList.toggle('ibc-open', open);
+      userBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    if (userBtn && userDropdown) {
+      userBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setUserDropdown(!userDropdown.classList.contains('ibc-open'));
+      });
+      // Hover-open on pointer devices, but keep click/keys as the source of truth
+      var menu = userBtn.closest('.ibc-user-menu');
+      if (menu && window.matchMedia && window.matchMedia('(hover:hover) and (min-width:992px)').matches) {
+        menu.addEventListener('mouseenter', function () { setUserDropdown(true); });
+        menu.addEventListener('mouseleave', function () { setUserDropdown(false); });
+      }
+      userDropdown.addEventListener('click', function (e) { e.stopPropagation(); });
+    }
+
+    /* Outside click closes both popups (self-contained so the header works
+       even if the layout's own handlers fail to register). */
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest) return;
+      if (searchPanel && searchPanel.classList.contains('ibc-open') &&
+        !e.target.closest('#ibcSearchPanel') && !e.target.closest('#ibcSearchToggle')) {
+        setSearchPanel(false);
+      }
+      if (userDropdown && userDropdown.classList.contains('ibc-open') &&
+        !e.target.closest('.ibc-user-menu')) {
+        setUserDropdown(false);
+      }
+    });
+
+    /* Escape closes everything, and also closes the mobile menu */
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      setSearchPanel(false);
+      setUserDropdown(false);
+      if (typeof window.ibcCloseMobileMenu === 'function') window.ibcCloseMobileMenu();
+    });
+
+    /* Growing to desktop must not leave the mobile search panel open */
+    var wasDesktop = window.innerWidth >= 992;
+    window.addEventListener('resize', function () {
+      var isDesktop = window.innerWidth >= 992;
+      if (isDesktop !== wasDesktop) {
+        wasDesktop = isDesktop;
+        setSearchPanel(false);
+        setUserDropdown(false);
+      }
+    });
+  })();
+</script>

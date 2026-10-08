@@ -71,47 +71,43 @@
       </button>
     </div>
     <ul>
-      <li><a href="/" onclick="ibcCloseMobileMenu()">Home</a></li>
-      <li><a href="/water-ibc-tanks">Water IBC Tanks</a></li>
-      <li><a href="/chemical-ibc-tanks">Chemical IBC Tanks</a></li>
-      <li><a href="/fertilizer-ibc-tanks">Fertilizer IBC Tanks</a></li>
-      <li><a href="/food-grade-ibc-tanks">Food Grade IBC Tanks</a></li>
-      <li><a href="/used-ibc-tanks">Used IBC Tanks</a></li>
-      <li><a href="/diesel-storage-tanks">Diesel Storage Tanks</a></li>
-      <li><a href="/about">About Us</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/" class="<%= (typeof path !== 'undefined' && (path === '/' || path === '')) ? 'ibc-active' : '' %>" onclick="ibcCloseMobileMenu()"><i class="bi bi-house-door"></i> Home</a></li>
+      <li><a href="/about" class="<%= (typeof path !== 'undefined' && path.indexOf('/about') === 0) ? 'ibc-active' : '' %>" onclick="ibcCloseMobileMenu()"><i class="bi bi-info-circle"></i> About Us</a></li>
+      <li><a href="/contact" class="<%= (typeof path !== 'undefined' && path.indexOf('/contact') === 0) ? 'ibc-active' : '' %>" onclick="ibcCloseMobileMenu()"><i class="bi bi-envelope"></i> Contact</a></li>
     </ul>
     <!-- Mobile Search -->
-    <form action="/search" method="GET" style="position:relative;margin:16px 0">
-      <input type="text" name="q" placeholder="Search tanks..." style="width:100%;padding:10px 14px 10px 38px;border:2px solid rgba(255,255,255,.15);border-radius:var(--ibc-radius-sm);background:rgba(255,255,255,.06);color:var(--ibc-white);font-size:14px;transition:.3s;" onfocus="this.style.borderColor='var(--ibc-accent)';this.style.background='rgba(255,255,255,.12)'" onblur="this.style.borderColor='rgba(255,255,255,.15)';this.style.background='rgba(255,255,255,.06)'">
-      <i class="bi bi-search" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:15px"></i>
+    <form action="/search" method="GET" class="ibc-mobile-menu-search">
+      <label class="ibc-sr-only" for="ibcMenuSearchInput">Search tanks</label>
+      <input id="ibcMenuSearchInput" type="search" name="q" autocomplete="off" placeholder="Search tanks..."
+        value="<%= typeof searchQuery !== 'undefined' && searchQuery ? searchQuery : '' %>">
+      <button type="submit" class="ibc-header-search-btn" aria-label="Search"><i class="bi bi-search"></i></button>
     </form>
-    <div style="padding-top:16px; border-top:1px solid rgba(255,255,255,0.1);">
+    <div class="ibc-mobile-menu-account">
       <% if (typeof user !== 'undefined' && user) { %>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div class="ibc-mobile-menu-user">
         <% if (user.profile_photo) { %>
-        <img src="<%= user.profile_photo %>" alt="<%= user.name %>" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);">
+        <img src="<%= user.profile_photo %>" alt="<%= user.name %>" class="ibc-mobile-menu-avatar">
         <% } else { %>
-        <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--ibc-accent);color:var(--ibc-dark);font-weight:700;font-size:18px;"><%= user.name.charAt(0).toUpperCase() %></span>
+        <span class="ibc-mobile-menu-avatar-placeholder"><%= user.name.charAt(0).toUpperCase() %></span>
         <% } %>
-        <div>
-          <div style="font-weight:600;color:var(--ibc-white);font-size:15px;"><%= user.name %></div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.6);"><%= user.email || '' %></div>
+        <div class="ibc-mobile-menu-user-meta">
+          <div class="ibc-mobile-menu-user-name"><%= user.name %></div>
+          <div class="ibc-mobile-menu-user-email"><%= user.email || '' %></div>
         </div>
       </div>
-      <% if (user.role === 'admin') { %>
-      <a href="/admin/dashboard" class="ibc-btn ibc-btn-outline ibc-btn-sm" style="width:100%;margin-bottom:10px;justify-content:center;border-color:rgba(255,255,255,0.3);color:var(--ibc-white);">
+      <% if (user.role === 'admin' || user.role === 'developer') { %>
+      <a href="/admin/dashboard" class="ibc-btn ibc-btn-outline ibc-btn-sm ibc-menu-full" onclick="ibcCloseMobileMenu()">
         <i class="bi bi-speedometer2"></i> Dashboard
       </a>
       <% } %>
-      <form action="/auth/logout" method="POST" style="margin:0;">
+      <form action="/auth/logout" method="POST">
         <input type="hidden" name="_method" value="DELETE">
-        <button type="submit" class="ibc-btn ibc-btn-outline ibc-btn-sm" style="width:100%;justify-content:center;border-color:rgba(255,255,255,0.3);color:var(--ibc-white);">
+        <button type="submit" class="ibc-btn ibc-btn-outline ibc-btn-sm ibc-menu-full">
           <i class="bi bi-box-arrow-right"></i> Sign Out
         </button>
       </form>
       <% } else { %>
-      <button onclick="showAuthModal();ibcCloseMobileMenu();" class="ibc-btn ibc-btn-primary" style="width:100%;justify-content:center;">
+      <button onclick="showAuthModal();ibcCloseMobileMenu();" class="ibc-btn ibc-btn-primary ibc-menu-full">
         <i class="bi bi-person-fill"></i> Login
       </button>
       <% } %>
@@ -144,12 +140,24 @@
     function ibcOpenMobileMenu() {
       document.getElementById('ibcMobileMenu').classList.add('ibc-open');
       document.getElementById('ibcMobileOverlay').classList.add('ibc-open');
+      var burger = document.getElementById('ibcHamburger');
+      if (burger) {
+        burger.classList.add('ibc-open');
+        burger.setAttribute('aria-expanded', 'true');
+        burger.setAttribute('aria-label', 'Close menu');
+      }
       document.body.style.overflow = 'hidden';
     }
 
     function ibcCloseMobileMenu() {
       document.getElementById('ibcMobileMenu').classList.remove('ibc-open');
       document.getElementById('ibcMobileOverlay').classList.remove('ibc-open');
+      var burger = document.getElementById('ibcHamburger');
+      if (burger) {
+        burger.classList.remove('ibc-open');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.setAttribute('aria-label', 'Open menu');
+      }
       document.body.style.overflow = '';
     }
 
@@ -162,16 +170,20 @@
     });
 
     // Scroll Animations
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('ibc-visible');
-        }
+    var observer = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('ibc-visible');
+            if (observer) observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
       });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
+    }
 
     // Close user dropdown on outside click
     document.addEventListener('click', function(e) {
@@ -185,7 +197,8 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.ibc-animate').forEach(function(el) {
-        observer.observe(el);
+        if (observer) observer.observe(el);
+        else el.classList.add('ibc-visible');
       });
     });
   </script>
