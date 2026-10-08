@@ -46,7 +46,7 @@ function buildKVObject(keys, values) {
 
 const productController = {
 
-    async list(req, res) {
+    async list(req, res, next) {
         try {
             let products = await Product.getAll();
             const categories = await Category.getAll();
@@ -63,7 +63,9 @@ const productController = {
             const maxPrice = parseFloat(req.query.maxPrice) || 1000;
             const condition = req.query.condition || '';
 
-            if (req.user && req.user.role === 'admin' || req.user.role === 'developer' && req.baseUrl === '/admin') {
+            // Guarded + parenthesised: the old expression crashed with a
+            // TypeError for logged-out visitors (req.user.role on undefined).
+            if (req.user && (req.user.role === 'admin' || req.user.role === 'developer') && req.baseUrl === '/admin') {
                 return res.render('admin/products/index', {
                     title: 'Products',
                     products,
@@ -89,8 +91,9 @@ const productController = {
             });
         } catch (error) {
             console.error('Product list error:', error);
-            req.flash('error', 'Failed to fetch products');
-            res.redirect('/');
+            // next(error) instead of res.redirect('/'): redirecting here could
+            // bounce endlessly between '/' and '/products' when both failed.
+            next(error);
         }
     },
 
