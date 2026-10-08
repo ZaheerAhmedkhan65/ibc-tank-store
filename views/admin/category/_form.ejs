@@ -1,0 +1,199 @@
+<!-- views/admin/category/_form.ejs -->
+<!-- Shared category create/edit form. Expects: category (object|null), formAction (string) -->
+<% const v = (field, fallback = '') => category ? (category[field] ?? fallback) : fallback; %>
+
+<section class="mt-4">
+    <form action="<%= formAction %>" method="POST" id="categoryForm">
+        <div class="card">
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item"><button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#catTabDetails">Details</button></li>
+                    <li class="nav-item"><button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#catTabFeatures">Features</button></li>
+                    <li class="nav-item"><button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#catTabApplications">Applications</button></li>
+                    <li class="nav-item"><button type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#catTabFaqs">FAQs</button></li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- ─── Details ─────────────────────────────────────── -->
+                    <div class="tab-pane fade show active" id="catTabDetails">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">Category Name *</label>
+                                <input type="text" class="form-control" id="categoryName" name="name"
+                                    value="<%= v('name') %>" required>
+                            </div>
+                            <div class="col-md-4">
+                              <label class="form-label fw-semibold">Icon (bi class)</label>
+                              <input type="text" class="form-control" name="icon" value="<%= v('icon') %>" placeholder="bi-droplet-fill">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="is_active" value="1" <%= Number(v('is_active', 1)) ? 'checked' : '' %>>
+                                <label class="form-check-label">Active</label>
+                              </div>
+                            </div>
+                            <!-- Hidden: auto-filled (slugified) from Category Name -->
+                            <input type="hidden" id="slugField" name="slug" value="<%= v('slug') %>">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Description</label>
+                                <textarea class="form-control" id="categoryDescription" name="description"
+                                    rows="2"><%= v('description') %></textarea>
+                            </div>
+                            <!-- Hidden: Meta Title auto-filled from Category Name, Meta Description from Description -->
+                            <input type="hidden" id="metaTitleField" name="meta_title" value="<%= v('meta_title') %>">
+                            <input type="hidden" id="metaDescField" name="meta_description" value="<%= v('meta_description') %>">
+                        </div>
+                    </div>
+
+                    <!-- ─── Features ────────────────────────────────────── -->
+                    <div class="tab-pane fade" id="catTabFeatures">
+                        <div id="featuresList">
+                            <% (v('features', [])).forEach(function(row, i) { %>
+                                <%- include('_row', { type: 'features', row: row, index: i }) %>
+                            <% }) %>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-add="features">
+                            <i class="bi bi-plus-lg me-1"></i> Add Feature
+                        </button>
+                    </div>
+
+                    <!-- ─── Applications ────────────────────────────────── -->
+                    <div class="tab-pane fade" id="catTabApplications">
+                        <div id="applicationsList">
+                            <% (v('applications', [])).forEach(function(row, i) { %>
+                                <%- include('_row', { type: 'applications', row: row, index: i }) %>
+                            <% }) %>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-add="applications">
+                            <i class="bi bi-plus-lg me-1"></i> Add Application
+                        </button>
+                    </div>
+
+                    <!-- ─── FAQs ────────────────────────────────────────── -->
+                    <div class="tab-pane fade" id="catTabFaqs">
+                        <div id="faqsList">
+                            <% (v('faqs', [])).forEach(function(row, i) { %>
+                                <%- include('_row', { type: 'faqs', row: row, index: i }) %>
+                            <% }) %>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" data-add="faqs">
+                            <i class="bi bi-plus-lg me-1"></i> Add FAQ
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <a href="/admin/categories" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i> <%= category ? 'Update Category' : 'Create Category' %>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<script>
+    const rowTemplate = (type, index) => {
+        const isFaq = type === 'faqs';
+        const firstField = isFaq ? 'question' : 'title';
+        const firstLabel = isFaq ? 'Question' : 'Title';
+        const secondField = isFaq ? 'answer' : 'description';
+        const secondLabel = isFaq ? 'Answer' : 'Description';
+        return `
+            <div class="border rounded p-3 mb-2 ${type}-row" data-row>
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label small fw-semibold">${firstLabel}</label>
+                        <input type="text" class="form-control form-control-sm" name="${type}[${index}][${firstField}]" value="">
+                    </div>
+                    ${isFaq ? '' : `
+                    <div class="col-md-2">
+                        <label class="form-label small fw-semibold">Icon (bi class)</label>
+                        <input type="text" class="form-control form-control-sm" name="${type}[${index}][icon]" value="" placeholder="bi-droplet-fill">
+                    </div>`}
+                    <div class="col-md-1">
+                        <label class="form-label small fw-semibold">Order</label>
+                        <input type="number" class="form-control form-control-sm" name="${type}[${index}][display_order]" value="${index}">
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-remove-row><i class="bi bi-trash"></i> Remove</button>
+                    </div>
+                    <div class="col-md-12">
+                      <label class="form-label small fw-semibold">${secondLabel}</label>
+                      <textarea class="form-control form-control-sm" name="${type}[${index}][${secondField}]" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>`;
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add-row buttons
+        document.querySelectorAll('[data-add]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.getAttribute('data-add');
+                const list = document.getElementById(`${type}List`);
+                const index = list.querySelectorAll('[data-row]').length;
+                list.insertAdjacentHTML('beforeend', rowTemplate(type, index));
+                // TinyMCE already ran once at page load — initialize an editor
+                // for the new row's Description/Answer textarea as well
+                // (see public/admin/assets/js/tinymce.js).
+                if (typeof window.ibcInitTinyMCE === 'function') {
+                    window.ibcInitTinyMCE(list.lastElementChild);
+                }
+            });
+        });
+
+        // Remove row (event delegation on the form)
+        document.getElementById('categoryForm').addEventListener('click', function (e) {
+            const btn = e.target.closest('[data-remove-row]');
+            if (!btn) return;
+            const row = btn.closest('[data-row]');
+            // Destroy the row's TinyMCE instances before dropping it from the DOM
+            row.querySelectorAll('textarea').forEach((t) => {
+                if (t.id && window.tinymce) {
+                    const editor = window.tinymce.get(t.id);
+                    if (editor) editor.remove();
+                }
+            });
+            row.remove();
+        });
+
+        // ─── Auto-fill hidden Slug / Meta Title / Meta Description ──────
+        const nameInput = document.getElementById('categoryName');
+        const descInput = document.getElementById('categoryDescription');
+        const slugInput = document.getElementById('slugField');
+        const metaTitleInput = document.getElementById('metaTitleField');
+        const metaDescInput = document.getElementById('metaDescField');
+
+        // Mirrors slugify() in models/Category.js
+        const slugify = (text) =>
+            String(text || '')
+                .toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/[\s_]+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+
+        if (nameInput && slugInput && metaTitleInput) {
+            const syncFromName = () => {
+                const name = nameInput.value.trim();
+                slugInput.value = slugify(name);
+                metaTitleInput.value = name;
+            };
+            nameInput.addEventListener('input', syncFromName);
+            // Seed only empty targets so saved values survive until the name changes
+            if (!slugInput.value) slugInput.value = slugify(nameInput.value);
+            if (!metaTitleInput.value) metaTitleInput.value = nameInput.value.trim();
+        }
+
+        if (descInput && metaDescInput) {
+            const syncFromDescription = () => {
+                metaDescInput.value = descInput.value.trim();
+            };
+            descInput.addEventListener('input', syncFromDescription);
+            if (!metaDescInput.value) metaDescInput.value = descInput.value.trim();
+        }
+    });
+</script>

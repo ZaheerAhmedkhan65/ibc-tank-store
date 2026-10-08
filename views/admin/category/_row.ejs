@@ -1,0 +1,33 @@
+<!-- views/admin/category/_row.ejs -->
+<!-- One editable row for features / applications / faqs. Expects: type, row, index -->
+<% const isFaq = type === 'faqs'; %>
+<div class="border rounded p-3 mb-2 <%= type %>-row" data-row>
+    <div class="row g-2 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label small fw-semibold"><%= isFaq ? 'Question' : 'Title' %></label>
+            <input type="text" class="form-control form-control-sm" name="<%= type %>[<%= index %>][<%= isFaq ? 'question' : 'title' %>]"
+                value="<%= row[isFaq ? 'question' : 'title'] || '' %>">
+        </div>
+        <% if (!isFaq) { %>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold">Icon (bi class)</label>
+                <input type="text" class="form-control form-control-sm" name="<%= type %>[<%= index %>][icon]"
+                    value="<%= row.icon || '' %>" placeholder="bi-droplet-fill">
+            </div>
+        <% } %>
+        <div class="col-md-1">
+            <label class="form-label small fw-semibold">Order</label>
+            <input type="number" class="form-control form-control-sm" name="<%= type %>[<%= index %>][display_order]"
+                value="<%= row.display_order ?? index %>">
+        </div>
+        <div class="col-md-1 text-end">
+            <button type="button" class="btn btn-sm btn-outline-danger" data-remove-row>
+                <i class="bi bi-trash"></i> Remove
+            </button>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label small fw-semibold"><%= isFaq ? 'Answer' : 'Description' %></label>
+          <textarea class="form-control form-control-sm" name="<%= type %>[<%= index %>][<%= isFaq ? 'answer' : 'description' %>]" rows="2"><%= row[isFaq ? 'answer' : 'description'] || '' %></textarea>
+        </div>
+    </div>
+</div>

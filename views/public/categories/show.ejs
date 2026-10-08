@@ -1,0 +1,112 @@
+<!-- views/public/categories/show.ejs -->
+<!-- Page Hero -->
+<section class="ibc-page-hero">
+    <div class="ibc-container">
+        <div class="ibc-breadcrumb">
+            <a href="/">Home</a> <i class="bi bi-chevron-right" style="font-size:10px"></i>
+            <span><%= category.name %></span>
+        </div>
+        <h1><%= category.meta_title || category.name %></h1>
+        <p><%= category.description || '' %></p>
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:2">
+            <a href="#category-products" class="ibc-btn ibc-btn-primary ibc-btn-lg"><i class="bi bi-box"></i> View Products</a>
+            <a href="https://wa.me/<%= settings.contact_number %>?text=Hello%2C%20I%20am%20interested%20in%20<%= encodeURIComponent(category.name) %>.%20Please%20share%20pricing%20and%20availability."
+                class="ibc-btn ibc-btn-whatsapp ibc-btn-lg" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i> WhatsApp Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<% if (category.features && category.features.length) { %>
+<section class="ibc-section ibc-bg-white">
+    <div class="ibc-container">
+        <h2 class="ibc-section-title" style="text-align:center;margin-bottom:32px">Why Choose Our <%= category.name %>?</h2>
+        <div class="ibc-contact-grid">
+            <% category.features.forEach(function(feature) { %>
+                <div class="ibc-animate" style="background:var(--ibc-gray-100);border-radius:var(--ibc-radius-lg);padding:28px;">
+                    <div style="font-size:36px;color:var(--ibc-primary);margin-bottom:12px">
+                        <i class="bi <%= feature.icon || 'bi-check-circle-fill' %>"></i>
+                    </div>
+                    <h3 style="font-size:18px;font-weight:700;margin-bottom:8px"><%= feature.title %></h3>
+                    <p style="color:var(--ibc-gray-700);margin:0"><%= feature.description %></p>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<!-- Applications -->
+<% if (category.applications && category.applications.length) { %>
+<section class="ibc-section" style="background:var(--ibc-gray-100)">
+    <div class="ibc-container">
+        <h2 class="ibc-section-title" style="text-align:center;margin-bottom:32px">Applications of <%= category.name %></h2>
+        <div class="ibc-contact-grid">
+            <% category.applications.forEach(function(application) { %>
+                <div class="ibc-animate" style="background:#fff;border-radius:var(--ibc-radius-lg);padding:28px;">
+                    <div style="font-size:36px;color:var(--ibc-primary);margin-bottom:12px">
+                        <i class="bi <%= application.icon || 'bi-grid-fill' %>"></i>
+                    </div>
+                    <h3 style="font-size:18px;font-weight:700;margin-bottom:8px"><%= application.title %></h3>
+                    <p style="color:var(--ibc-gray-700);margin:0"><%= application.description %></p>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<!-- Products -->
+<section class="ibc-section" id="category-products" style="background:var(--ibc-gray-100)">
+    <div class="ibc-container">
+        <h2 class="ibc-section-title" style="text-align:center;margin-bottom:32px"><%= category.name %> Products</h2>
+        <% if (products.length) { %>
+            <div class="ibc-contact-grid">
+                <% products.forEach(function(product) { %>
+                    <div class="ibc-animate" style="background:#fff;border-radius:var(--ibc-radius-lg);overflow:hidden;border:1px solid var(--ibc-gray-200);">
+                        <a href="/products/<%= product.id %>">
+                            <% if (product.image) { %>
+                                <img src="<%= product.image %>" alt="<%= product.name %>" style="width:100%;height:200px;object-fit:cover;">
+                            <% } %>
+                        </a>
+                        <div style="padding:16px">
+                            <a href="/products/<%= product.id %>" style="text-decoration:none">
+                                <h3 style="font-size:16px;font-weight:700;color:var(--ibc-dark)"><%= product.name %></h3>
+                            </a>
+                            <p style="color:var(--ibc-primary);font-weight:800;margin:8px 0 0">Rs <%= Number(product.price).toLocaleString() %></p>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p style="text-align:center;color:var(--ibc-gray-700)">No products available in this category yet.</p>
+        <% } %>
+    </div>
+</section>
+
+<!-- FAQs -->
+<% if (category.faqs && category.faqs.length) { %>
+<section class="ibc-section ibc-bg-white">
+    <div class="ibc-container">
+        <h2 class="ibc-section-title" style="text-align:center;margin-bottom:32px">Frequently Asked Questions</h2>
+        <div style="max-width:800px;margin:0 auto">
+            <div class="accordion" id="categoryFaqAccordion">
+                <% category.faqs.forEach(function(faq, index) { %>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button <%= index === 0 ? '' : 'collapsed' %>" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#faq-<%= faq.id %>">
+                                <%= faq.question %>
+                            </button>
+                        </h2>
+                        <div id="faq-<%= faq.id %>" class="accordion-collapse collapse <%= index === 0 ? 'show' : '' %>"
+                            data-bs-parent="#categoryFaqAccordion">
+                            <div class="accordion-body"><%= faq.answer %></div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</section>
+<% } %>

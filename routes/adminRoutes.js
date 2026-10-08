@@ -43,9 +43,12 @@ router.post('/contacts/:id/mark-replied', contactController.markAsReplied);
 
 // Categories
 router.get('/categories', categoryController.list);
+router.get('/categories/new', categoryController.createForm);
 router.post('/categories/create', categoryController.create);
-router.post('/categories/:id/update', categoryController.update);
-router.post('/categories/:id/delete', categoryController.delete);
+router.get('/categories/:categoryId', categoryController.show);
+router.get('/categories/:categoryId/edit', categoryController.editForm);
+router.post('/categories/:categoryId/update', categoryController.update);
+router.post('/categories/:categoryId/delete', categoryController.delete);
 
 router.get('/settings', settingsController.getSettingsPage);
 router.post('/settings', settingsController.saveSettings);
