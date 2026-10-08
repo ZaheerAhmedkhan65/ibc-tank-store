@@ -125,15 +125,17 @@
             <div class="ibc-products-grid">
                 <% latestProducts.slice(0, 8).forEach(function(product) { %>
                     <a href="/products/<%= product.id %>" class="ibc-product-card ibc-animate" style="text-decoration:none;color:inherit;display:block">
-                        <div class="ibc-product-img-wrapper">
-                            <img src="<%= product.image %>" alt="<%= product.name %>" class="ibc-product-img" loading="lazy" width="400" height="220">
+                      <div class="ibc-product-img-wrapper">
+                        <img src="<%= product.image %>" alt="<%= product.name %>" class="ibc-product-img" loading="lazy" width="400" height="220">
+                      </div>
+                      <div class="ibc-product-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <h3><%= product.name %></h3>
+                          <div class="ibc-product-capacity" title="Capacity: <%= product.specs.capacity %>"><i class="bi bi-box"></i><%= product.specs.capacity %></div>
                         </div>
-                        <div class="ibc-product-body">
-                            <h3><%= product.name %></h3>
-                            <div class="ibc-product-capacity"><i class="bi bi-box"></i> 1000 Liters</div>
-                            <p class="ibc-product-usage">Suitable for water, chemical & industrial storage</p>
-                        </div>
-                        <div class="ibc-product-hover-arrow"><i class="bi bi-arrow-right"></i></div>
+                        <p class="ibc-product-usage"><%- product.description %></p>
+                      </div>
+                      <div class="ibc-product-hover-arrow"><i class="bi bi-arrow-right"></i></div>
                     </a>
                     <% }); %>
             </div>
