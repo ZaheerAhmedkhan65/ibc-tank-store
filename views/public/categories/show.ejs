@@ -1,0 +1,126 @@
+<!-- views/public/categories/show.ejs -->
+<!-- Page Hero -->
+<section class="ibc-page-hero">
+    <div class="ibc-container">
+        <div class="ibc-breadcrumb">
+            <a href="/">Home</a> <i class="bi bi-chevron-right" style="font-size:10px"></i>
+            <span><%= category.name %></span>
+        </div>
+        <h1><%= category.name %></h1>
+        <p><%- category.description || '' %></p>
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:2">
+            <a href="#category-products" class="ibc-btn ibc-btn-primary ibc-btn-lg"><i class="bi bi-box"></i> View Products</a>
+            <a href="https://wa.me/<%= settings.contact_number %>?text=Hello%2C%20I%20am%20interested%20in%20<%= encodeURIComponent(category.name) %>.%20Please%20share%20pricing%20and%20availability."
+                class="ibc-btn ibc-btn-whatsapp ibc-btn-lg" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp"></i> WhatsApp Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="ibc-section ibc-bg-white">
+  <div class="ibc-container">
+    <div class="ibc-contact-grid">
+      <div class="ibc-animate">
+        <h2 style="font-size:24px;font-weight:800;color:var(--ibc-dark);margin-bottom:16px">Why Choose Our <%= category.name %>?</h2>
+        <ul class="ibc-benefits-list">
+          <% category.features.forEach(function(feature)  { %>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <div>
+              <h4>
+                <%= feature.title %>
+              </h4>
+              <p>
+                <%- feature.description %>
+              </p>
+            </div>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+      <div class="ibc-animate">
+        <div style="background:linear-gradient(135deg,var(--ibc-primary) 0%,var(--ibc-primary-light) 100%);border-radius:var(--ibc-radius-lg);padding:40px;display:flex;align-items:center;justify-content:center;min-height:300px;color:#fff;font-size:120px">
+          <i class="<%= category.icon %>"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Applications -->
+<section class="ibc-section" style="background:var(--ibc-gray-100)">
+  <div class="ibc-container">
+    <h2 class="ibc-section-title ibc-animate">Applications & Use Cases</h2>
+    <div class="ibc-accent-line"></div>
+    <p class="ibc-section-subtitle ibc-animate">
+      <%= category.name %> are used across a wide range of industries in Pakistan.
+    </p>
+    <div class="ibc-features-grid">
+      <%  category.applications.forEach(function(application){ %>
+      <div class="ibc-feature-card ibc-animate">
+        <div class="ibc-feature-icon"><i class="<%= application.icon %>"></i></div>
+        <h3>
+          <%= application.title %>
+        </h3>
+        <p>
+          <%- application.description %>
+        </p>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section class="ibc-section ibc-bg-white" id="category-products">
+    <div class="ibc-container">
+        <h2 class="ibc-section-title ibc-animate"><%= category.name %> Products</h2>
+        <div class="ibc-accent-line"></div>
+        <% if (products.length) { %>
+            <div class="ibc-products-grid">
+              <% products.slice(0, 8).forEach(function(product) { %>
+              <a href="/products/<%= product.id %>" class="ibc-product-card ibc-animate" style="text-decoration:none;color:inherit;display:block">
+                <div class="ibc-product-img-wrapper">
+                  <img src="<%= product.image %>" alt="<%= product.name %>" class="ibc-product-img" loading="lazy" width="400" height="220">
+                </div>
+                <div class="ibc-product-body">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <h3><%= product.name %></h3>
+                    <div class="ibc-product-capacity" title="Capacity: <%= product.specs.capacity %>"><i class="bi bi-box"></i><%= product.specs.capacity %></div>
+                  </div>
+                  <p class="ibc-product-usage"><%- product.description %></p>
+                </div>
+                <div class="ibc-product-hover-arrow"><i class="bi bi-arrow-right"></i></div>
+              </a>
+              <% }); %>
+            </div>
+        <% } else { %>
+            <p style="text-align:center;color:var(--ibc-gray-700)">No products available in this category yet.</p>
+        <% } %>
+    </div>
+</section>
+
+<!-- FAQs -->
+<% if (category.faqs && category.faqs.length) { %>
+<section class="ibc-section" style="background:var(--ibc-gray-100)">
+  <div class="ibc-container">
+    <h2 class="ibc-section-title ibc-animate">Frequently Asked Questions</h2>
+    <div class="ibc-accent-line"></div>
+    <div class="ibc-faq-list ibc-animate">
+      <% category.faqs.forEach(function(faq, index) { %>
+      <div class="ibc-faq-item<%= index === 0 ? ' ibc-open' : '' %>">
+        <button class="ibc-faq-question">
+          <%= faq.question %>
+          <i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="ibc-faq-answer">
+          <p>
+            <%- faq.answer %>
+          </p>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>

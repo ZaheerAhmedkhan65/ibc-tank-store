@@ -24,8 +24,10 @@ const ai_request = (request, respondWith) => {
     );
 };
 
-tinymce.init({
-    selector: 'textarea',
+// Shared TinyMCE configuration — used for the initial page-wide init AND for
+// editors created later through ibcInitTinyMCE() (e.g. rows added
+// dynamically by the admin category form).
+const TINY_MCE_CONFIG = {
     plugins: [
         // Core editing features
         'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
@@ -37,4 +39,26 @@ tinymce.init({
     tinycomments_author: 'Author name',
     mergetags_list: [{}],
     ai_request
-});
+};
+
+let ibcTinyMceSeq = 0;
+
+// Initialize TinyMCE on every <textarea> inside `root` (default: document)
+// that doesn't have an editor yet. Safe to call repeatedly — each textarea is
+// flagged synchronously before its init is queued, so it can never be
+// initialized twice. Dynamically inserted rows call this on their new element
+// (see views/admin/category/_form.ejs) because the page-load pass below has
+// already run by then.
+window.ibcInitTinyMCE = (root) => {
+    if (!window.tinymce) return;
+    (root || document).querySelectorAll('textarea').forEach((el) => {
+        if (el.dataset.tinymceInit === '1') return;       // init queued or ready
+        if (el.id && window.tinymce.get(el.id)) return;   // editor already exists
+        if (!el.id) el.id = `ibc-tm-${++ibcTinyMceSeq}`;   // unique id (used for init + cleanup)
+        el.dataset.tinymceInit = '1';
+        window.tinymce.init({ ...TINY_MCE_CONFIG, selector: `#${el.id}` });
+    });
+};
+
+// Page-load pass: turns every textarea present right now into an editor.
+ibcInitTinyMCE(document);

@@ -8,7 +8,71 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- =========================
 CREATE TABLE IF NOT EXISTS categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    meta_title VARCHAR(255),
+    meta_description TEXT,
+    icon VARCHAR(100),
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- CATEGORY FEATURES TABLE
+-- =========================
+CREATE TABLE IF NOT EXISTS category_features (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    title VARCHAR(255),
+    description TEXT,
+    icon VARCHAR(100),
+    display_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_category_features_category
+        FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- CATEGORY APPLICATIONS TABLE
+-- =========================
+CREATE TABLE IF NOT EXISTS category_applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    title VARCHAR(255),
+    description TEXT,
+    icon VARCHAR(100),
+    display_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_category_applications_category
+        FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- =========================
+-- CATEGORY FAQS TABLE
+-- =========================
+CREATE TABLE IF NOT EXISTS category_faqs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    question VARCHAR(255),
+    answer TEXT,
+    display_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_category_faqs_category
+        FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

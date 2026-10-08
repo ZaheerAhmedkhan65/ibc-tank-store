@@ -115,7 +115,7 @@ img{max-width:100%;height:auto}
 .ibc-product-card{background:var(--ibc-white);border-radius:var(--ibc-radius-md);overflow:hidden;box-shadow:var(--ibc-shadow-sm);transition:var(--ibc-transition);border:1px solid rgba(0,0,0,.04);position:relative}
 .ibc-product-card:hover{transform:translateY(-4px);box-shadow:var(--ibc-shadow-lg)}
 .ibc-product-img{width:100%;height:200px;object-fit:cover;background:var(--ibc-gray-100)}
-@media(min-width:768px){.ibc-product-img{height:220px}}
+@media(min-width:768px){.ibc-product-img{height:auto}}
 .ibc-product-badge{position:absolute;top:12px;left:12px;background:var(--ibc-orange);color:var(--ibc-white);padding:4px 10px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase}
 .ibc-product-body{padding:16px}
 .ibc-product-body h3{font-size:16px;font-weight:700;margin-bottom:4px;color:var(--ibc-dark)}

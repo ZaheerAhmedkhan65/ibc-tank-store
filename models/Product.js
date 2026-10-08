@@ -76,6 +76,19 @@ class Product {
         return await this.attachImages(rows);
     }
 
+    // Every product of a category (no stock filter / no limit) — used by the admin category detail page.
+    static async getByCategory(categoryId) {
+        const sqlQuery = `
+            SELECT p.*, c.name AS category_name
+            FROM products p
+            JOIN categories c ON p.category_id = c.id
+            WHERE p.category_id = ?
+            ORDER BY p.created_at DESC
+        `;
+        const [rows] = await db.execute(sqlQuery, [categoryId]);
+        return await this.attachImages(rows);
+    }
+
     static async getById(id) {
         const [rows] = await db.execute(`
             SELECT 
