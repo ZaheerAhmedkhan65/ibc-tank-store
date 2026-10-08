@@ -14,8 +14,6 @@ const MySQLStore = require('express-mysql-session')(session);
 const pool = require('./db'); // MySQL connection pool
 const Product = require('../models/Product');
 const Category = require('../models/Category');
-const Setting = require('../models/Setting');
-const { saveSettingsCookie } = require("../utils/settingsCookie");
 const settingMiddleware = require("../middlewares/settings");
 
 // Routes
@@ -121,7 +119,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', async (req, res) => {
+app.get('/', async (req, res, next) => {
     try {
         // Explicitly convert all numeric parameters
         let featuredProducts = await Product.getTopRated(4, 5);
@@ -153,13 +151,10 @@ app.get('/', async (req, res) => {
         }));
 
 
-        let allSettings = null;
-
-        if (!req.cookies.ibc_tank_store_settings) {
-            // No cookie → fetch from DB and save
-            allSettings = await Setting.all();
-            saveSettingsCookie(res, allSettings);
-        }
+        // NOTE: the settings cookie is already saved by middlewares/settings.js
+        // (which runs before this handler). An earlier copy of this block passed
+        // the raw Setting.all() array to jwt.sign() and logged an error on every
+        // uncached home page hit — removed.
 
         res.render('public/home', {
             title: 'Home',
@@ -182,8 +177,9 @@ app.get('/', async (req, res) => {
         });
     } catch (error) {
         console.error('Homepage error:', error);
-        req.flash('error', 'Failed to load homepage');
-        res.redirect('/products');
+        // Render the error page instead of redirecting: bouncing between '/'
+        // and '/products' could loop forever when both pages failed.
+        next(error);
     }
 });
 
@@ -248,15 +244,23 @@ app.use((req, res) => {
 // ==========================================
 
 // Error handling middleware (keep this after 404 handler)
+// IMPORTANT: never redirect from here. The previous version did
+// res.redirect('/'), which produced an infinite redirect loop
+// (ERR_TOO_MANY_REDIRECTS) whenever the '/' route itself failed.
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    if (req.flash) {
-        req.flash('error', 'Something went wrong!');
-        return res.redirect('/');
+    console.error(err.stack || err);
+    if (res.headersSent) {
+        return next(err);
     }
 
-    // Flash not available → send plain error
-    res.render('error', { error: err });
+    res.status(500).render('error', {
+        title: 'Server Error',
+        // Don't leak stack traces / internals in production
+        error: process.env.NODE_ENV === 'production'
+            ? { message: 'Something went wrong. Please try again later.' }
+            : err,
+        user: req.user || null
+    });
 });
 
 module.exports = app;
