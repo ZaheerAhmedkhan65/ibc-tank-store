@@ -123,7 +123,7 @@ app.get('/', async (req, res, next) => {
     try {
         // Explicitly convert all numeric parameters
         let featuredProducts = await Product.getTopRated(4, 5);
-        const categories = await Category.getAll();
+        const categories = await Category.getAll({ activeOnly: true });
         let latestProducts = await Product.getLatest(8);
 
         const searchQuery = req.query.search || '';

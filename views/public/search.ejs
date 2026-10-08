@@ -12,9 +12,6 @@
   </div>
 </section>
 
-<!-- Quote Form -->
-<%- include('./partials/_quote_form.ejs') %>
-
 <section class="ibc-section ibc-bg-white">
   <div class="ibc-container">
     <div style="display:grid;grid-template-columns:1fr;gap:32px">
@@ -80,15 +77,11 @@
                   <img src="<%= product.image %>" alt="<%= product.name %>" class="ibc-product-img" loading="lazy" width="400" height="220">
                 </div>
                 <div class="ibc-product-body">
-                  <h3><%= product.name %></h3>
-                  <div class="ibc-product-capacity"><i class="bi bi-box"></i> 1000 Liters</div>
-                  <p style="font-size:18px;font-weight:700;color:var(--ibc-primary);margin:8px 0"><%= settings.price_currency %><%= product.price %></p>
-                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-                    <a href="https://wa.me/<%= settings.contact_number %>?text=<%= encodeURIComponent('Hi, I am interested in this product: ' + product.name) %>"
-                       class="ibc-btn ibc-btn-whatsapp ibc-btn-sm" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                      <i class="bi bi-whatsapp"></i> Inquire
-                    </a>
+                  <div class="d-flex align-items-center justify-content-between">
+                    <h3><%= product.name %></h3>
+                    <div class="ibc-product-capacity" title="Capacity: <%= product.specs && product.specs.capacity ? product.specs.capacity : '' %>"><i class="bi bi-box"></i><%= product.specs && product.specs.capacity ? product.specs.capacity : '' %></div>
                   </div>
+                  <p class="ibc-product-usage"><%- product.description %></p>
                 </div>
                 <div class="ibc-product-hover-arrow"><i class="bi bi-arrow-right"></i></div>
               </a>
